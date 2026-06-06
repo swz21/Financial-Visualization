@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2023 中国宏观货币流动图</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES (THEME)
+           =========================================== */
+        :root {
+            --stage-bg: #eef1ec;
+            --slide-bg: #f7f4eb;
+            --ink: #18201d;
+            --muted: #5f6d66;
+            --faint: rgba(24, 32, 29, 0.1);
+            --panel: rgba(255, 252, 244, 0.82);
+            --panel-strong: rgba(255, 252, 244, 0.96);
+            --line: rgba(24, 32, 29, 0.14);
+            --shadow: rgba(74, 87, 78, 0.22);
+            --font-display: "Noto Serif SC", serif;
+            --font-body: "Noto Sans SC", sans-serif;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.65s;
+        }
+
+        /* ===========================================
+           BASE STYLES
+           =========================================== */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* ===========================================
+           FIXED 16:9 STAGE: MANDATORY BASE STYLES
+           Include this ENTIRE file in every presentation.
+           Slides are authored at 1920x1080 and scaled as a whole.
+           =========================================== */
+
+        /* 1. Lock the browser viewport */
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background: var(--stage-bg, #000);
+        }
+
+        /* 2. Full-window deck viewport */
+        .deck-viewport {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            background: var(--stage-bg, #000);
+        }
+
+        /* 3. Fixed 16:9 design canvas.
+           JavaScript sets transform: translate(...) scale(...). */
+        .deck-stage {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            transform-origin: 0 0;
+            background: var(--slide-bg, #fff);
+        }
+
+        /* 4. Slides stack inside the fixed stage.
+           Content must be laid out at 1920x1080, not reflowed per device. */
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            display: block;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            background: var(--slide-bg, #fff);
+        }
+
+        .slide.active,
+        .slide.visible {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 1;
+        }
+
+        /* 5. Keep media inside authored slide bounds */
+        img,
+        video,
+        canvas,
+        svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        /* 6. Presentation chrome stays outside the slide design system */
+        .deck-controls {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        /* 7. Print one fixed-size slide per page */
+        @media print {
+            html,
+            body {
+                width: 1920px;
+                height: auto;
+                overflow: visible;
+                background: #fff;
+            }
+
+            .deck-viewport {
+                position: static;
+                overflow: visible;
+                background: #fff;
+            }
+
+            .deck-stage {
+                position: static;
+                width: auto;
+                height: auto;
+                transform: none !important;
+                background: none;
+            }
+
+            .slide {
+                position: relative;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                width: 1920px;
+                height: 1080px;
+                break-after: page;
+                page-break-after: always;
+            }
+
+            .slide:last-child {
+                break-after: auto;
+                page-break-after: auto;
+            }
+
+            .deck-controls {
+                display: none !important;
+            }
+        }
+
+        /* 8. Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+        }
+
+        /* ===========================================
+           STAGE BACKGROUND
+           =========================================== */
+        body {
+            color: var(--ink);
+            font-family: var(--font-body);
+        }
+
+        .macro-slide {
+            background:
+                radial-gradient(circle at 18% 50%, rgba(225, 72, 64, 0.14), transparent 30%),
+                radial-gradient(circle at 74% 69%, rgba(255, 139, 76, 0.14), transparent 28%),
+                radial-gradient(circle at 43% 17%, rgba(85, 158, 226, 0.14), transparent 26%),
+                linear-gradient(135deg, #f8f3e7 0%, #edf3ea 48%, #eef1f4 100%);
+        }
+
+        .macro-slide::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 28% 48%, rgba(255, 252, 244, 0.62), transparent 34%),
+                radial-gradient(circle at 72% 58%, rgba(255, 252, 244, 0.42), transparent 30%);
+            pointer-events: none;
+        }
+
+        .macro-slide::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(255, 252, 244, 0.72), transparent 24%, transparent 77%, rgba(255, 252, 244, 0.66));
+            pointer-events: none;
+        }
+
+        /* ===========================================
+           HEADER AND CHROME
+           =========================================== */
+        .header {
+            position: absolute;
+            left: 72px;
+            top: 52px;
+            width: 1240px;
+            z-index: 4;
+        }
+
+        .eyebrow {
+            color: #9b6a13;
+            font-size: 21px;
+            font-weight: 900;
+            letter-spacing: 0;
+            margin: 0 0 12px;
+        }
+
+        h1 {
+            color: var(--ink);
+            font-family: var(--font-display);
+            font-size: 70px;
+            font-weight: 900;
+            line-height: 1.03;
+            letter-spacing: 0;
+            margin: 0;
+        }
+
+        .subtitle {
+            color: rgba(24, 32, 29, 0.72);
+            font-size: 22px;
+            line-height: 1.65;
+            margin: 16px 0 0;
+            width: 930px;
+        }
+
+        .source-note {
+            position: absolute;
+            right: 70px;
+            top: 64px;
+            width: 420px;
+            color: rgba(24, 32, 29, 0.66);
+            font-size: 18px;
+            line-height: 1.55;
+            text-align: right;
+            z-index: 4;
+        }
+
+        .source-note strong {
+            color: #18201d;
+            display: block;
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        /* ===========================================
+           GRAPH LAYOUT
+           =========================================== */
+        .graph-wrap {
+            position: absolute;
+            left: 44px;
+            top: 160px;
+            width: 1452px;
+            height: 872px;
+            z-index: 2;
+        }
+
+        #flowGraph {
+            width: 1452px;
+            height: 872px;
+            overflow: visible;
+        }
+
+        .zone-label {
+            fill: rgba(24, 32, 29, 0.44);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .zone-line {
+            fill: none;
+            stroke: rgba(24, 32, 29, 0.12);
+            stroke-width: 2;
+            stroke-dasharray: 8 12;
+        }
+
+        .edge-hit {
+            fill: none;
+            stroke: transparent;
+            stroke-linecap: round;
+            cursor: pointer;
+        }
+
+        .edge-halo {
+            fill: none;
+            stroke: rgba(255, 252, 244, 0.88);
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .edge-main {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.84;
+            filter: drop-shadow(0 8px 14px rgba(70, 83, 78, 0.24));
+            pointer-events: none;
+            transition: opacity 240ms ease, filter 240ms ease;
+        }
+
+        .edge-motion {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.62);
+            stroke-linecap: round;
+            opacity: 0.26;
+            pointer-events: none;
+            stroke-dasharray: 2 22;
+            animation: flowDash 1.9s linear infinite;
+        }
+
+        .edge-group.is-muted .edge-main,
+        .edge-group.is-muted .edge-motion,
+        .edge-group.is-muted .edge-halo {
+            opacity: 0.08;
+        }
+
+        .edge-group.is-active .edge-main {
+            opacity: 0.98;
+            filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.78)) drop-shadow(0 8px 18px rgba(70, 83, 78, 0.26));
+        }
+
+        .edge-group.is-hidden {
+            display: none;
+        }
+
+        @keyframes flowDash {
+            from { stroke-dashoffset: 0; }
+            to { stroke-dashoffset: -48; }
+        }
+
+        .node-group {
+            cursor: pointer;
+        }
+
+        .node-core {
+            stroke: rgba(255, 252, 244, 0.96);
+            stroke-width: 2.5;
+            filter: drop-shadow(0 14px 24px rgba(70, 83, 78, 0.28));
+            transition: filter 240ms ease, stroke-width 240ms ease;
+        }
+
+        .node-group.is-active .node-core {
+            stroke-width: 4;
+            filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.86)) drop-shadow(0 14px 24px rgba(70, 83, 78, 0.28));
+        }
+
+        .node-ring {
+            fill: none;
+            stroke: rgba(24, 32, 29, 0.22);
+            stroke-width: 7;
+            stroke-dasharray: 4 12;
+            pointer-events: none;
+        }
+
+        .node-label {
+            fill: #18201d;
+            font-size: 22px;
+            font-weight: 900;
+            text-anchor: middle;
+            paint-order: stroke;
+            stroke: rgba(255, 252, 244, 0.9);
+            stroke-width: 7px;
+            stroke-linejoin: round;
+        }
+
+        .node-meta {
+            fill: rgba(24, 32, 29, 0.62);
+            font-size: 15px;
+            font-weight: 700;
+            text-anchor: middle;
+            paint-order: stroke;
+            stroke: rgba(255, 252, 244, 0.82);
+            stroke-width: 5px;
+            stroke-linejoin: round;
+        }
+
+        .node-value {
+            fill: rgba(255, 252, 244, 0.94);
+            font-size: 16px;
+            font-weight: 900;
+            text-anchor: middle;
+        }
+
+        /* ===========================================
+           RIGHT PANEL
+           =========================================== */
+        .side-panel {
+            position: absolute;
+            right: 54px;
+            top: 220px;
+            width: 382px;
+            height: 724px;
+            padding: 24px;
+            background: linear-gradient(180deg, rgba(255, 252, 244, 0.94), rgba(247, 244, 235, 0.86));
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 28px 70px rgba(76, 91, 82, 0.18);
+            z-index: 4;
+        }
+
+        .panel-kicker {
+            color: #2275a9;
+            font-size: 16px;
+            font-weight: 900;
+            margin: 0 0 10px;
+        }
+
+        .panel-title {
+            color: #18201d;
+            font-size: 30px;
+            font-weight: 900;
+            line-height: 1.22;
+            margin: 0 0 6px;
+        }
+
+        .panel-value {
+            color: #a06b11;
+            font-family: var(--font-display);
+            font-size: 42px;
+            font-weight: 900;
+            line-height: 1;
+            margin: 18px 0 8px;
+        }
+
+        .panel-caption {
+            color: rgba(24, 32, 29, 0.62);
+            font-size: 15px;
+            line-height: 1.55;
+            min-height: 46px;
+            margin: 0;
+        }
+
+        .panel-rule {
+            height: 1px;
+            margin: 20px 0;
+            background: var(--line);
+        }
+
+        .flow-list-title {
+            color: rgba(24, 32, 29, 0.82);
+            font-size: 17px;
+            font-weight: 900;
+            margin: 0 0 12px;
+        }
+
+        .flow-list {
+            display: grid;
+            gap: 9px;
+            max-height: 376px;
+            overflow: hidden;
+        }
+
+        .flow-row {
+            display: grid;
+            grid-template-columns: 10px 1fr auto;
+            align-items: center;
+            gap: 10px;
+            min-height: 31px;
+            color: rgba(24, 32, 29, 0.72);
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .flow-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .flow-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .flow-amount {
+            color: rgba(24, 32, 29, 0.9);
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .flow-row.is-active .flow-name,
+        .flow-row:hover .flow-name {
+            color: #111714;
+        }
+
+        /* ===========================================
+           FILTERS AND LEGEND
+           =========================================== */
+        .toolbar {
+            position: absolute;
+            left: 76px;
+            bottom: 42px;
+            width: 1330px;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toggle-button,
+        .category-button {
+            flex: 0 0 auto;
+            height: 38px;
+            border: 1px solid rgba(24, 32, 29, 0.16);
+            border-radius: 8px;
+            background: rgba(255, 252, 244, 0.72);
+            color: rgba(24, 32, 29, 0.72);
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 800;
+            padding: 0 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+        }
+
+        .toggle-button.is-active,
+        .category-button.is-active {
+            color: #fff8ea;
+            background: rgba(24, 32, 29, 0.86);
+            border-color: rgba(24, 32, 29, 0.5);
+        }
+
+        .category-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .swatch {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-note {
+            margin-left: auto;
+            color: rgba(24, 32, 29, 0.54);
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* ===========================================
+           LOADING AND ERROR STATES
+           =========================================== */
+        .status {
+            position: absolute;
+            left: 80px;
+            top: 310px;
+            z-index: 5;
+            width: 560px;
+            color: rgba(24, 32, 29, 0.72);
+            font-size: 22px;
+            line-height: 1.6;
+        }
+
+        /* ===========================================
+           ANIMATIONS
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition:
+                opacity var(--duration-normal) var(--ease-out-expo),
+                transform var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide.visible .reveal:nth-child(1) { transition-delay: 0.08s; }
+        .slide.visible .reveal:nth-child(2) { transition-delay: 0.16s; }
+        .slide.visible .reveal:nth-child(3) { transition-delay: 0.24s; }
+    </style>
+</head>
+<body>
+    <div class="deck-viewport">
+        <main class="deck-stage" id="deckStage">
+            <section class="slide macro-slide active visible">
+                <header class="header">
+                    <p class="eyebrow reveal">2023 | 资金流量表教学图稿</p>
+                    <h1 class="reveal">中国宏观货币流动图</h1>
+                    <p class="subtitle reveal">节点表示部门或过程，边表示工资、消费、财政、存款、信贷、债券和投资等年度流量。边越粗，2023 年对应流量越大。</p>
+                </header>
+
+                <div class="source-note reveal">
+                    <strong>单位：亿元</strong>
+                    数据来自 <span id="sourceTitle">China Macro Circulation Model, 2023</span><br>
+                    默认显示官方直接流与教学简化流；可切换全量边。
+                </div>
+
+                <div class="graph-wrap">
+                    <svg id="flowGraph" viewBox="0 0 1452 872" role="img" aria-label="2023 中国宏观货币流动节点边图"></svg>
+                </div>
+
+                <aside class="side-panel reveal" id="detailPanel">
+                    <p class="panel-kicker" id="panelKicker">当前视图</p>
+                    <h2 class="panel-title" id="panelTitle">默认可见流量</h2>
+                    <div class="panel-value" id="panelValue">16 条</div>
+                    <p class="panel-caption" id="panelCaption">悬停节点或边查看含义。初稿通过固定节点布局和手调曲线通道减少遮挡，后续可在此基础上继续做叙事场景。</p>
+                    <div class="panel-rule"></div>
+                    <p class="flow-list-title">当前显示的主要流量</p>
+                    <div class="flow-list" id="flowList"></div>
+                </aside>
+
+                <div class="toolbar reveal" id="toolbar">
+                    <button class="toggle-button is-active" data-mode="default" type="button">默认边</button>
+                    <button class="toggle-button" data-mode="all" type="button">全部边</button>
+                    <span class="legend-note">宽度 = 流量；虚线 = 概念边</span>
+                </div>
+
+                <div class="status" id="status">正在加载宏观流动数据...</div>
+            </section>
+        </main>
+    </div>
+
+    <script src="./vendor/d3.v7.min.js"></script>
+    <script>
+        /* ===========================================
+           FIXED STAGE CONTROLLER
+           =========================================== */
+        class FixedStage {
+            constructor(stage) {
+                this.stage = stage;
+                this.scale = this.scale.bind(this);
+                this.scale();
+                window.addEventListener("resize", this.scale);
+            }
+
+            scale() {
+                const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+                const x = (window.innerWidth - 1920 * factor) / 2;
+                const y = (window.innerHeight - 1080 * factor) / 2;
+                this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+            }
+        }
+
+        new FixedStage(document.getElementById("deckStage"));
+
+        /* ===========================================
+           DATA AND VISUAL CONSTANTS
+           =========================================== */
+        const WIDTH = 1452;
+        const HEIGHT = 872;
+        const graphPadding = { left: 70, right: 80, top: 50, bottom: 42 };
+        const categoryMeta = {
+            labor_income: { name: "劳动收入", color: "#e85d5a" },
+            goods_and_services: { name: "消费与需求", color: "#f2c15b" },
+            fiscal: { name: "财政转移", color: "#75b8ff" },
+            saving_and_deposits: { name: "储蓄存款", color: "#6ed59a" },
+            credit: { name: "信贷", color: "#45d5de" },
+            securities: { name: "债券证券", color: "#b98cff" },
+            investment: { name: "资本形成", color: "#ff8a4c" },
+            external: { name: "外部部门", color: "#d6e96b" },
+            conceptual: { name: "概念循环", color: "#bdc4cd" }
+        };
+
+        const nodeColors = {
+            household: "#e85d5a",
+            firms: "#ff8a4c",
+            finance: "#45d5de",
+            government: "#75b8ff",
+            external: "#d6e96b",
+            production: "#f2c15b"
+        };
+
+        const routeControls = {
+            firms_to_households_wages: [[0.58, 0.29], [0.28, 0.28]],
+            financial_to_households_wages: [[0.28, 0.75], [0.16, 0.64]],
+            government_to_households_wages: [[0.34, 0.18], [0.19, 0.30]],
+            households_to_firms_consumption: [[0.30, 0.58], [0.51, 0.59]],
+            government_to_firms_public_consumption: [[0.52, 0.22], [0.60, 0.34]],
+            rest_world_to_firms_net_exports: [[0.86, 0.42], [0.76, 0.44]],
+            households_to_government_current_transfers: [[0.18, 0.30], [0.34, 0.21]],
+            firms_to_government_production_taxes: [[0.67, 0.28], [0.56, 0.18]],
+            government_to_households_current_transfers: [[0.42, 0.26], [0.25, 0.36]],
+            government_to_households_social_transfers_in_kind: [[0.37, 0.31], [0.21, 0.42]],
+            households_to_financial_deposits: [[0.14, 0.64], [0.25, 0.78]],
+            households_to_financial_insurance: [[0.20, 0.62], [0.31, 0.73]],
+            firms_to_financial_deposits: [[0.60, 0.68], [0.48, 0.79]],
+            government_to_financial_deposits: [[0.43, 0.35], [0.39, 0.62]],
+            financial_to_households_loans: [[0.33, 0.88], [0.14, 0.82]],
+            financial_to_firms_loans: [[0.48, 0.88], [0.63, 0.72]],
+            financial_to_government_loans: [[0.33, 0.58], [0.38, 0.34]],
+            financial_to_government_bonds: [[0.45, 0.66], [0.49, 0.35]],
+            financial_to_firms_bonds: [[0.55, 0.78], [0.66, 0.64]],
+            firms_to_production_investment: [[0.72, 0.52], [0.76, 0.60]],
+            government_to_production_public_investment: [[0.57, 0.20], [0.72, 0.48]],
+            households_to_production_capital_formation: [[0.28, 0.84], [0.64, 0.83]],
+            production_to_households_future_income: [[0.73, 1.02], [0.12, 0.98]]
+        };
+
+        const labelByZone = {
+            domestic_real_economy: "实体经济",
+            financial_system: "金融系统",
+            fiscal_system: "财政系统",
+            external: "外部部门",
+            process: "生产过程"
+        };
+
+        let activeMode = "default";
+        let activeCategories = new Set(Object.keys(categoryMeta));
+        let graphState = null;
+
+        /* ===========================================
+           FORMATTING HELPERS
+           =========================================== */
+        function formatWanYi(value) {
+            if (value === null || value === undefined || Number.isNaN(value)) return "概念";
+            const wanYi = value / 10000;
+            if (wanYi >= 10) return `${d3.format(".1f")(wanYi)} 万亿`;
+            if (wanYi >= 1) return `${d3.format(".2f")(wanYi)} 万亿`;
+            return `${d3.format(",.0f")(value)} 亿`;
+        }
+
+        function metricValue(node) {
+            const hint = node.visual_hints && node.visual_hints.size_metric;
+            return hint && node.metrics ? node.metrics[hint] : 1;
+        }
+
+        function pointFromLayout(layout) {
+            return {
+                x: graphPadding.left + layout.x * (WIDTH - graphPadding.left - graphPadding.right),
+                y: graphPadding.top + layout.y * (HEIGHT - graphPadding.top - graphPadding.bottom)
+            };
+        }
+
+        function toPoint(pair) {
+            return { x: pair[0] * WIDTH, y: pair[1] * HEIGHT };
+        }
+
+        function offsetFrom(point, toward, distance) {
+            const dx = toward.x - point.x;
+            const dy = toward.y - point.y;
+            const length = Math.hypot(dx, dy) || 1;
+            return {
+                x: point.x + (dx / length) * distance,
+                y: point.y + (dy / length) * distance
+            };
+        }
+
+        function edgePath(edge) {
+            const controls = (routeControls[edge.id] || [[0.5, 0.5], [0.5, 0.5]]).map(toPoint);
+            const start = offsetFrom(edge.sourceNode, controls[0], edge.sourceNode.r + edge.width * 0.45 + 12);
+            const end = offsetFrom(edge.targetNode, controls[1], edge.targetNode.r + edge.width * 0.64 + 16);
+            return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${controls[0].x.toFixed(1)} ${controls[0].y.toFixed(1)}, ${controls[1].x.toFixed(1)} ${controls[1].y.toFixed(1)}, ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
+        }
+
+        function shouldShow(edge) {
+            const defaultVisible = edge.visual_hints && edge.visual_hints.default_visible === true;
+            const modeVisible = activeMode === "all" || defaultVisible;
+            return modeVisible && activeCategories.has(edge.category);
+        }
+
+        /* ===========================================
+           DETAIL PANEL
+           =========================================== */
+        function setPanelForSummary(edges) {
+            const visible = edges.filter(shouldShow).sort((a, b) => b.display_value - a.display_value);
+            const measured = visible.filter(edge => edge.category !== "conceptual");
+            const total = d3.sum(measured, edge => edge.display_value || 0);
+            document.getElementById("panelKicker").textContent = "当前视图";
+            document.getElementById("panelTitle").textContent = activeMode === "all" ? "全部可筛选流量" : "默认可见流量";
+            document.getElementById("panelValue").textContent = `${visible.length} 条`;
+            document.getElementById("panelCaption").textContent = `当前显示的可度量流量合计约 ${formatWanYi(total)}。概念边不计入合计，只用于表达循环方向。`;
+            renderFlowList(visible);
+        }
+
+        function setPanelForEdge(edge) {
+            const meta = categoryMeta[edge.category] || categoryMeta.conceptual;
+            document.getElementById("panelKicker").textContent = meta.name;
+            document.getElementById("panelTitle").textContent = edge.label_cn || edge.label;
+            document.getElementById("panelValue").textContent = formatWanYi(edge.display_value);
+            document.getElementById("panelCaption").textContent = edge.explain && edge.explain.plain_english
+                ? edge.explain.plain_english
+                : `${edge.sourceNode.label_cn} → ${edge.targetNode.label_cn}`;
+            renderFlowList(graphState.edges.filter(shouldShow).sort((a, b) => b.display_value - a.display_value), edge.id);
+        }
+
+        function setPanelForNode(node) {
+            const badges = (node.visual_hints && node.visual_hints.badge_metrics || [])
+                .map(key => node.metrics && node.metrics[key] !== undefined ? `${key}: ${formatWanYi(node.metrics[key])}` : null)
+                .filter(Boolean);
+            document.getElementById("panelKicker").textContent = labelByZone[node.zone] || "节点";
+            document.getElementById("panelTitle").textContent = node.label_cn || node.label;
+            document.getElementById("panelValue").textContent = formatWanYi(metricValue(node));
+            document.getElementById("panelCaption").textContent = badges.length
+                ? badges.join(" | ")
+                : (node.short_explanation || "该节点来自 JSON 中的 graph.nodes。");
+        }
+
+        function renderFlowList(edges, activeId = null) {
+            const list = d3.select("#flowList");
+            list.selectAll("*").remove();
+            const rows = list.selectAll(".flow-row")
+                .data(edges.slice(0, 9), edge => edge.id)
+                .join("div")
+                .attr("class", edge => `flow-row${edge.id === activeId ? " is-active" : ""}`)
+                .on("mouseenter", (event, edge) => highlightEdge(edge))
+                .on("mouseleave", clearHighlight);
+
+            rows.append("span")
+                .attr("class", "flow-dot")
+                .style("background", edge => (categoryMeta[edge.category] || categoryMeta.conceptual).color);
+
+            rows.append("span")
+                .attr("class", "flow-name")
+                .text(edge => edge.label_cn || edge.label);
+
+            rows.append("span")
+                .attr("class", "flow-amount")
+                .text(edge => formatWanYi(edge.display_value));
+        }
+
+        /* ===========================================
+           HIGHLIGHTING
+           =========================================== */
+        function highlightEdge(edge) {
+            d3.selectAll(".edge-group")
+                .classed("is-muted", d => d.id !== edge.id)
+                .classed("is-active", d => d.id === edge.id);
+            d3.selectAll(".node-group")
+                .classed("is-active", d => d.id === edge.source || d.id === edge.target);
+            setPanelForEdge(edge);
+        }
+
+        function highlightNode(node) {
+            d3.selectAll(".edge-group")
+                .classed("is-muted", d => d.source !== node.id && d.target !== node.id)
+                .classed("is-active", d => d.source === node.id || d.target === node.id);
+            d3.selectAll(".node-group")
+                .classed("is-active", d => d.id === node.id);
+            setPanelForNode(node);
+        }
+
+        function clearHighlight() {
+            d3.selectAll(".edge-group").classed("is-muted", false).classed("is-active", false);
+            d3.selectAll(".node-group").classed("is-active", false);
+            if (graphState) setPanelForSummary(graphState.edges);
+        }
+
+        /* ===========================================
+           GRAPH RENDERING
+           =========================================== */
+        function renderGraph(raw) {
+            document.getElementById("sourceTitle").textContent = raw.metadata.title;
+            const svg = d3.select("#flowGraph");
+            svg.selectAll("*").remove();
+
+            const nodes = raw.graph.nodes.map(node => ({ ...node, ...pointFromLayout(node.layout) }));
+            const nodeById = new Map(nodes.map(node => [node.id, node]));
+            const nodeSize = d3.scaleSqrt()
+                .domain(d3.extent(nodes, metricValue))
+                .range([38, 86]);
+            nodes.forEach(node => {
+                node.r = node.id === "production_engine" ? 76 : nodeSize(metricValue(node));
+                node.color = nodeColors[node.visual_hints.color_role] || "#f3efe7";
+            });
+
+            const measuredEdges = raw.graph.edges.filter(edge => edge.category !== "conceptual");
+            const edgeWidth = d3.scaleSqrt()
+                .domain(d3.extent(measuredEdges, edge => edge.display_value))
+                .range([4, 39]);
+
+            const edges = raw.graph.edges.map(edge => ({
+                ...edge,
+                sourceNode: nodeById.get(edge.source),
+                targetNode: nodeById.get(edge.target),
+                width: edge.category === "conceptual" ? 5 : edgeWidth(edge.display_value || 1),
+                color: (categoryMeta[edge.category] || categoryMeta.conceptual).color
+            }));
+
+            graphState = { raw, nodes, edges };
+
+            const defs = svg.append("defs");
+            edges.forEach(edge => {
+                defs.append("marker")
+                    .attr("id", `arrow-${edge.id}`)
+                    .attr("viewBox", "0 -6 12 12")
+                    .attr("markerWidth", Math.max(8, edge.width * 0.95))
+                    .attr("markerHeight", Math.max(8, edge.width * 0.95))
+                    .attr("refX", 10)
+                    .attr("refY", 0)
+                    .attr("orient", "auto")
+                    .attr("markerUnits", "userSpaceOnUse")
+                    .append("path")
+                    .attr("d", "M0,-5.4L11,0L0,5.4Z")
+                    .attr("fill", edge.color)
+                    .attr("opacity", edge.category === "conceptual" ? 0.72 : 0.88);
+            });
+
+            renderZones(svg);
+            renderEdges(svg, edges);
+            renderNodes(svg, nodes);
+            renderToolbar(edges);
+            applyVisibility();
+            setPanelForSummary(edges);
+            document.getElementById("status").style.display = "none";
+        }
+
+        function renderZones(svg) {
+            const zones = svg.append("g").attr("class", "zones");
+            zones.append("path")
+                .attr("class", "zone-line")
+                .attr("d", "M 80 440 C 420 230, 870 230, 1270 368");
+            zones.append("path")
+                .attr("class", "zone-line")
+                .attr("d", "M 190 760 C 500 655, 785 682, 1100 760");
+            zones.append("text")
+                .attr("class", "zone-label")
+                .attr("x", 98)
+                .attr("y", 408)
+                .text("收入与需求循环");
+            zones.append("text")
+                .attr("class", "zone-label")
+                .attr("x", 360)
+                .attr("y", 816)
+                .text("金融再分配通道");
+            zones.append("text")
+                .attr("class", "zone-label")
+                .attr("x", 944)
+                .attr("y", 642)
+                .text("投资进入生产过程");
+        }
+
+        function renderEdges(svg, edges) {
+            const edgeLayer = svg.append("g").attr("class", "edges");
+            const groups = edgeLayer.selectAll(".edge-group")
+                .data(edges, edge => edge.id)
+                .join("g")
+                .attr("class", "edge-group")
+                .on("mouseenter", (event, edge) => highlightEdge(edge))
+                .on("mouseleave", clearHighlight);
+
+            groups.append("path")
+                .attr("class", "edge-hit")
+                .attr("d", edgePath)
+                .attr("stroke-width", edge => Math.max(22, edge.width + 18));
+
+            groups.append("path")
+                .attr("class", "edge-halo")
+                .attr("d", edgePath)
+                .attr("stroke-width", edge => edge.width + 9);
+
+            groups.append("path")
+                .attr("class", "edge-main")
+                .attr("d", edgePath)
+                .attr("stroke", edge => edge.color)
+                .attr("stroke-width", edge => edge.width)
+                .attr("stroke-dasharray", edge => edge.category === "conceptual" ? "11 13" : null)
+                .attr("marker-end", edge => `url(#arrow-${edge.id})`);
+
+            groups.append("path")
+                .attr("class", "edge-motion")
+                .attr("d", edgePath)
+                .attr("stroke-width", edge => Math.max(1.4, edge.width * 0.17));
+        }
+
+        function renderNodes(svg, nodes) {
+            const nodeLayer = svg.append("g").attr("class", "nodes");
+            const groups = nodeLayer.selectAll(".node-group")
+                .data(nodes, node => node.id)
+                .join("g")
+                .attr("class", "node-group")
+                .attr("transform", node => `translate(${node.x},${node.y})`)
+                .on("mouseenter", (event, node) => highlightNode(node))
+                .on("mouseleave", clearHighlight);
+
+            groups.append("circle")
+                .attr("class", "node-ring")
+                .attr("r", node => node.r + 12)
+                .attr("stroke", node => node.color);
+
+            groups.append("circle")
+                .attr("class", "node-core")
+                .attr("r", node => node.r)
+                .attr("fill", node => node.color);
+
+            groups.append("circle")
+                .attr("r", node => Math.max(12, node.r * 0.2))
+                .attr("cy", node => -node.r * 0.18)
+                .attr("fill", "rgba(255,255,255,0.34)");
+
+            const labels = groups.append("text")
+                .attr("class", "node-label")
+                .attr("y", node => node.r + 34);
+
+            labels.each(function(node) {
+                const text = d3.select(this);
+                const parts = node.label_cn.includes(" / ")
+                    ? node.label_cn.split(" / ")
+                    : [node.label_cn];
+                parts.forEach((part, index) => {
+                    text.append("tspan")
+                        .attr("x", 0)
+                        .attr("dy", index === 0 ? 0 : 25)
+                        .text(part);
+                });
+            });
+
+            groups.append("text")
+                .attr("class", "node-meta")
+                .attr("y", node => node.r + (node.label_cn.includes(" / ") ? 82 : 58))
+                .text(node => labelByZone[node.zone] || node.zone);
+
+            groups.append("text")
+                .attr("class", "node-value")
+                .attr("y", 7)
+                .text(node => formatWanYi(metricValue(node)));
+        }
+
+        function renderToolbar(edges) {
+            const categories = Array.from(new Set(edges.map(edge => edge.category)))
+                .filter(category => categoryMeta[category]);
+            const toolbar = d3.select("#toolbar");
+
+            toolbar.selectAll(".category-button").remove();
+            toolbar.selectAll(".category-button")
+                .data(categories)
+                .join(enter => enter.insert("button", ".legend-note"))
+                .attr("class", "category-button is-active")
+                .attr("type", "button")
+                .attr("data-category", category => category)
+                .html(category => `<span class="swatch" style="background:${categoryMeta[category].color}"></span>${categoryMeta[category].name}`)
+                .on("click", function(event, category) {
+                    if (activeCategories.has(category)) {
+                        activeCategories.delete(category);
+                        this.classList.remove("is-active");
+                    } else {
+                        activeCategories.add(category);
+                        this.classList.add("is-active");
+                    }
+                    applyVisibility();
+                    setPanelForSummary(graphState.edges);
+                });
+
+            d3.selectAll(".toggle-button").on("click", function() {
+                activeMode = this.dataset.mode;
+                d3.selectAll(".toggle-button").classed("is-active", false);
+                d3.select(this).classed("is-active", true);
+                applyVisibility();
+                setPanelForSummary(graphState.edges);
+            });
+        }
+
+        function applyVisibility() {
+            d3.selectAll(".edge-group")
+                .classed("is-hidden", edge => !shouldShow(edge));
+        }
+
+        /* ===========================================
+           BOOTSTRAP
+           =========================================== */
+        d3.json("./data/macro_circulation_graph_2023.json")
+            .then(renderGraph)
+            .catch(error => {
+                console.error(error);
+                const status = document.getElementById("status");
+                status.textContent = "数据加载失败。请通过本地服务器打开页面，例如 python3 -m http.server 8000。";
+            });
+    </script>
+</body>
+</html>

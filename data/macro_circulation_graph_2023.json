@@ -1,0 +1,3995 @@
+{
+  "metadata": {
+    "title": "China Macro Circulation Model, 2023",
+    "subtitle": "An actor-centered flow-of-funds graph for the red-blood-cell metaphor",
+    "year": 2023,
+    "unit": "亿元",
+    "model_type": "actor_centered_circulation_graph",
+    "node_rule": "Nodes are economic actors or process nodes.",
+    "edge_rule": "Edges are economic relationships: payments, taxes, transfers, deposits, loans, bonds, and investment flows.",
+    "important_caveat": "This graph shows sectoral macro-accounting flows, not literal transaction-level money paths.",
+    "source_files": {
+      "nonfinancial_tree": "/mnt/data/fof_nonfinancial_sector_tree_2023.json",
+      "financial_tree": "/mnt/data/fof_financial_sector_tree_2023.json"
+    },
+    "source_tables": [
+      "2023年中国资金流量表（非金融交易）",
+      "2023年资金流量表(金融账户)"
+    ],
+    "data_mode": "annual_flow_2023",
+    "units": {
+      "base_unit": "亿元",
+      "display_options": [
+        {
+          "unit": "亿元",
+          "factor": 1
+        },
+        {
+          "unit": "万亿元",
+          "factor": 0.0001
+        }
+      ]
+    }
+  },
+  "manual": {
+    "description": "Editable/story layer. Tweak labels, copy, layout, scenes, and visibility here or in the script.",
+    "nodes": [
+      {
+        "id": "households",
+        "label": "Households",
+        "label_cn": "住户部门",
+        "node_type": "actor",
+        "actor_type": "institutional_sector",
+        "is_money_holder": true,
+        "zone": "domestic_real_economy",
+        "layout": {
+          "x": 0.16,
+          "y": 0.48
+        },
+        "short_explanation": "People and families: receive income, consume, save, deposit, and borrow.",
+        "visual_hints": {
+          "size_metric": "adjusted_disposable_income",
+          "ring_metric": "clotting_score",
+          "color_role": "household",
+          "badge_metrics": [
+            "actual_final_consumption",
+            "gross_saving",
+            "deposits"
+          ]
+        }
+      },
+      {
+        "id": "firms",
+        "label": "Firms / Producers",
+        "label_cn": "非金融企业 / 生产者",
+        "node_type": "actor",
+        "actor_type": "institutional_sector",
+        "is_money_holder": true,
+        "zone": "domestic_real_economy",
+        "layout": {
+          "x": 0.66,
+          "y": 0.48
+        },
+        "short_explanation": "Nonfinancial firms: produce goods/services, pay wages and taxes, borrow, and invest.",
+        "visual_hints": {
+          "size_metric": "value_added",
+          "ring_metric": "borrowing_pressure_score",
+          "color_role": "firms",
+          "badge_metrics": [
+            "value_added",
+            "compensation_paid",
+            "gross_capital_formation"
+          ]
+        }
+      },
+      {
+        "id": "financial_institutions",
+        "label": "Financial Institutions / Banks",
+        "label_cn": "金融机构 / 银行等",
+        "node_type": "actor",
+        "actor_type": "institutional_sector",
+        "is_money_holder": true,
+        "zone": "financial_system",
+        "layout": {
+          "x": 0.38,
+          "y": 0.78
+        },
+        "short_explanation": "The financial transformer: receives deposits and other liabilities, acquires loans and securities as assets.",
+        "visual_hints": {
+          "size_metric": "financial_uses_total",
+          "ring_metric": "recirculation_score",
+          "color_role": "finance",
+          "badge_metrics": [
+            "deposit_liabilities",
+            "loan_assets",
+            "debt_security_assets"
+          ]
+        }
+      },
+      {
+        "id": "government",
+        "label": "Government",
+        "label_cn": "广义政府",
+        "node_type": "actor",
+        "actor_type": "institutional_sector",
+        "is_money_holder": true,
+        "zone": "fiscal_system",
+        "layout": {
+          "x": 0.46,
+          "y": 0.17
+        },
+        "short_explanation": "The fiscal valve: taxes, transfers, public consumption, public investment, and bond financing.",
+        "visual_hints": {
+          "size_metric": "disposable_income",
+          "ring_metric": "borrowing_pressure_score",
+          "color_role": "government",
+          "badge_metrics": [
+            "actual_final_consumption",
+            "gross_capital_formation",
+            "debt_security_liabilities"
+          ]
+        }
+      },
+      {
+        "id": "rest_of_world",
+        "label": "Rest of World",
+        "label_cn": "国外部门",
+        "node_type": "actor",
+        "actor_type": "external_sector",
+        "is_money_holder": true,
+        "zone": "external",
+        "layout": {
+          "x": 0.89,
+          "y": 0.36
+        },
+        "short_explanation": "External demand and cross-border income/financial flows.",
+        "visual_hints": {
+          "size_metric": "net_exports_display_value",
+          "ring_metric": "external_oxygen_score",
+          "color_role": "external",
+          "badge_metrics": [
+            "net_exports_display_value",
+            "property_income_received_from_domestic"
+          ]
+        }
+      },
+      {
+        "id": "production_engine",
+        "label": "Production Engine",
+        "label_cn": "生产引擎",
+        "node_type": "process",
+        "actor_type": null,
+        "is_money_holder": false,
+        "zone": "process",
+        "layout": {
+          "x": 0.77,
+          "y": 0.68
+        },
+        "short_explanation": "Not a wallet: a process that turns labor, capital, and demand into future income.",
+        "visual_hints": {
+          "size_metric": "domestic_value_added",
+          "ring_metric": "investment_intensity",
+          "color_role": "production",
+          "badge_metrics": [
+            "domestic_value_added",
+            "gross_capital_formation"
+          ]
+        }
+      }
+    ],
+    "edge_specs": [
+      {
+        "id": "firms_to_households_wages",
+        "source": "firms",
+        "target": "households",
+        "label": "Wages from firms",
+        "label_cn": "企业支付工资",
+        "accounting_term": "Compensation of employees",
+        "accounting_term_cn": "劳动者报酬",
+        "category": "labor_income",
+        "metaphor_role": "income_creation",
+        "evidence_level": "direct_official_flow",
+        "plain_english": "Firms pay labor income to households. This is a main pipe from production to household purchasing power.",
+        "jargon": "Recorded as compensation of employees paid by nonfinancial enterprises.",
+        "default_visible": true
+      },
+      {
+        "id": "financial_to_households_wages",
+        "source": "financial_institutions",
+        "target": "households",
+        "label": "Finance-sector wages",
+        "label_cn": "金融部门工资",
+        "accounting_term": "Compensation of employees",
+        "accounting_term_cn": "劳动者报酬",
+        "category": "labor_income",
+        "metaphor_role": "income_creation",
+        "evidence_level": "direct_official_flow",
+        "plain_english": "Financial institutions also pay workers, adding to household income.",
+        "jargon": "Recorded as compensation of employees paid by financial institutions.",
+        "default_visible": false
+      },
+      {
+        "id": "government_to_households_wages",
+        "source": "government",
+        "target": "households",
+        "label": "Public-sector wages",
+        "label_cn": "公共部门工资",
+        "accounting_term": "Compensation of employees",
+        "accounting_term_cn": "劳动者报酬",
+        "category": "labor_income",
+        "metaphor_role": "income_creation",
+        "evidence_level": "direct_official_flow",
+        "plain_english": "Government pays wages to public-sector workers, moving public funds into household income.",
+        "jargon": "Recorded as compensation of employees paid by general government.",
+        "default_visible": true
+      },
+      {
+        "id": "households_to_firms_consumption",
+        "source": "households",
+        "target": "firms",
+        "label": "Household consumption",
+        "label_cn": "居民消费支出",
+        "accounting_term": "Actual final consumption",
+        "accounting_term_cn": "实际最终消费",
+        "category": "goods_and_services",
+        "metaphor_role": "oxygen_delivery",
+        "evidence_level": "direct_official_flow_simplified_counterparty",
+        "plain_english": "Households use income to buy goods and services. This is the main oxygen-delivery path for domestic demand.",
+        "jargon": "The official value is household actual final consumption. It is drawn as Households → Firms for teaching clarity.",
+        "caveat": "The table records a household use, not a literal counterparty matrix.",
+        "default_visible": true
+      },
+      {
+        "id": "government_to_firms_public_consumption",
+        "source": "government",
+        "target": "firms",
+        "label": "Public consumption / procurement",
+        "label_cn": "政府消费 / 采购",
+        "accounting_term": "Government actual final consumption",
+        "accounting_term_cn": "政府实际最终消费",
+        "category": "goods_and_services",
+        "metaphor_role": "public_oxygen_delivery",
+        "evidence_level": "direct_official_flow_simplified_counterparty",
+        "plain_english": "Government spending on final consumption supports demand for goods and services.",
+        "jargon": "Recorded as government actual final consumption.",
+        "caveat": "Drawn as Government → Firms for teaching clarity.",
+        "default_visible": true
+      },
+      {
+        "id": "rest_world_to_firms_net_exports",
+        "source": "rest_of_world",
+        "target": "firms",
+        "label": "Foreign demand / net exports",
+        "label_cn": "外需 / 净出口",
+        "accounting_term": "Net exports",
+        "accounting_term_cn": "净出口",
+        "category": "external",
+        "metaphor_role": "external_oxygen",
+        "evidence_level": "direct_official_flow_sign_normalized",
+        "plain_english": "External demand enters the domestic circulation through net exports. Goods flow outward; payment/demand flows inward.",
+        "jargon": "Net exports are exports minus imports. The graph uses absolute value and money-flow direction for teaching.",
+        "caveat": "This is net exports, not gross exports; it is not a full export-dependence measure.",
+        "default_visible": true
+      },
+      {
+        "id": "households_to_government_current_transfers",
+        "source": "households",
+        "target": "government",
+        "label": "Taxes & social contributions",
+        "label_cn": "税收与社保缴款",
+        "accounting_term": "Current transfers paid by households",
+        "accounting_term_cn": "住户经常转移支出",
+        "category": "fiscal",
+        "metaphor_role": "redistribution_valve_inflow",
+        "evidence_level": "direct_official_flow_grouped",
+        "plain_english": "Households send money into the fiscal/social system through taxes, social contributions, and other current transfers.",
+        "jargon": "Grouped current transfers paid by households, including income/property taxes and social insurance contributions.",
+        "default_visible": true
+      },
+      {
+        "id": "firms_to_government_production_taxes",
+        "source": "firms",
+        "target": "government",
+        "label": "Production taxes",
+        "label_cn": "生产税净额",
+        "accounting_term": "Net taxes on production",
+        "accounting_term_cn": "生产税净额",
+        "category": "fiscal",
+        "metaphor_role": "redistribution_valve_inflow",
+        "evidence_level": "direct_official_flow",
+        "plain_english": "Firms pay net production taxes to government as part of the production process.",
+        "jargon": "Recorded as net taxes on production paid by nonfinancial enterprises.",
+        "default_visible": true
+      },
+      {
+        "id": "government_to_households_current_transfers",
+        "source": "government",
+        "target": "households",
+        "label": "Social benefits & transfers",
+        "label_cn": "社会福利与转移",
+        "accounting_term": "Current transfers paid by government",
+        "accounting_term_cn": "政府经常转移支出",
+        "category": "fiscal",
+        "metaphor_role": "redistribution_valve_outflow",
+        "evidence_level": "direct_official_flow_simplified_counterparty",
+        "plain_english": "Government moves money back toward households through social benefits and transfers.",
+        "jargon": "Recorded as current transfers paid by general government. Drawn toward households for teaching clarity.",
+        "default_visible": true
+      },
+      {
+        "id": "government_to_households_social_transfers_in_kind",
+        "source": "government",
+        "target": "households",
+        "label": "Services in kind",
+        "label_cn": "实物社会转移",
+        "accounting_term": "Social transfers in kind",
+        "accounting_term_cn": "实物社会转移",
+        "category": "fiscal",
+        "metaphor_role": "public_service_delivery",
+        "evidence_level": "direct_official_flow_non_cash_service",
+        "plain_english": "Government provides services to households, such as public services consumed by households even if not paid as cash.",
+        "jargon": "Social transfers in kind are not ordinary cash payments; render separately or with a distinct style.",
+        "default_visible": false
+      },
+      {
+        "id": "households_to_financial_deposits",
+        "source": "households",
+        "target": "financial_institutions",
+        "label": "Deposits",
+        "label_cn": "存款",
+        "accounting_term": "Net acquisition of deposits",
+        "accounting_term_cn": "存款资产增加",
+        "category": "saving_and_deposits",
+        "metaphor_role": "clotting",
+        "evidence_level": "direct_official_flow",
+        "plain_english": "Households place a large share of new financial assets into deposits. This is the main clotting cue.",
+        "jargon": "In the financial account, household deposits are net acquisition of deposit assets.",
+        "default_visible": true
+      },
+      {
+        "id": "households_to_financial_insurance",
+        "source": "households",
+        "target": "financial_institutions",
+        "label": "Insurance reserves",
+        "label_cn": "保险准备金",
+        "accounting_term": "Insurance technical reserves",
+        "accounting_term_cn": "保险准备金",
+        "category": "saving_and_deposits",
+        "metaphor_role": "slow_saving_pool",
+        "evidence_level": "direct_official_flow",
+        "plain_english": "Some household saving enters insurance-reserve-like financial claims.",
+        "jargon": "Recorded as household net acquisition of insurance technical reserves.",
+        "default_visible": true
+      },
+      {
+        "id": "firms_to_financial_deposits",
+        "source": "firms",
+        "target": "financial_institutions",
+        "label": "Enterprise deposits",
+        "label_cn": "企业存款",
+        "accounting_term": "Net acquisition of deposits",
+        "accounting_term_cn": "存款资产增加",
+        "category": "saving_and_deposits",
+        "metaphor_role": "storage_pool",
+        "evidence_level": "direct_official_flow",
+        "plain_english": "Firms also increase deposits, storing some money in the financial system.",
+        "jargon": "Recorded as nonfinancial corporations' net acquisition of deposits.",
+        "default_visible": false
+      },
+      {
+        "id": "government_to_financial_deposits",
+        "source": "government",
+        "target": "financial_institutions",
+        "label": "Government deposits",
+        "label_cn": "政府存款",
+        "accounting_term": "Net acquisition of deposits",
+        "accounting_term_cn": "存款资产增加",
+        "category": "saving_and_deposits",
+        "metaphor_role": "storage_pool",
+        "evidence_level": "direct_official_flow",
+        "plain_english": "Government also holds/increases deposits, but in this flow view it is still a net borrower overall.",
+        "jargon": "Recorded as general government net acquisition of deposits.",
+        "default_visible": false
+      },
+      {
+        "id": "financial_to_households_loans",
+        "source": "financial_institutions",
+        "target": "households",
+        "label": "Household loans",
+        "label_cn": "住户贷款",
+        "accounting_term": "Net incurrence of loan liabilities",
+        "accounting_term_cn": "贷款负债增加",
+        "category": "credit",
+        "metaphor_role": "credit_recirculation",
+        "evidence_level": "direct_official_flow_simplified_lender",
+        "plain_english": "Households borrow, receiving credit but also taking on liabilities.",
+        "jargon": "Recorded as household net incurrence of loan liabilities. Drawn from the financial system for teaching clarity.",
+        "default_visible": true
+      },
+      {
+        "id": "financial_to_firms_loans",
+        "source": "financial_institutions",
+        "target": "firms",
+        "label": "Firm loans",
+        "label_cn": "企业贷款",
+        "accounting_term": "Net incurrence of loan liabilities",
+        "accounting_term_cn": "贷款负债增加",
+        "category": "credit",
+        "metaphor_role": "credit_recirculation",
+        "evidence_level": "direct_official_flow_simplified_lender",
+        "plain_english": "Firms rely heavily on loans to finance activity and investment.",
+        "jargon": "Recorded as nonfinancial corporations' net incurrence of loan liabilities.",
+        "default_visible": true
+      },
+      {
+        "id": "financial_to_government_loans",
+        "source": "financial_institutions",
+        "target": "government",
+        "label": "Government loans",
+        "label_cn": "政府贷款",
+        "accounting_term": "Net incurrence of loan liabilities",
+        "accounting_term_cn": "贷款负债增加",
+        "category": "credit",
+        "metaphor_role": "credit_recirculation",
+        "evidence_level": "direct_official_flow_simplified_lender",
+        "plain_english": "Government loan borrowing exists but is much smaller than bond financing in this dataset.",
+        "jargon": "Recorded as general government net incurrence of loan liabilities.",
+        "default_visible": false
+      },
+      {
+        "id": "financial_to_government_bonds",
+        "source": "financial_institutions",
+        "target": "government",
+        "label": "Government bonds",
+        "label_cn": "政府债券融资",
+        "accounting_term": "Debt securities liabilities",
+        "accounting_term_cn": "债券负债增加",
+        "category": "securities",
+        "metaphor_role": "debt_channel",
+        "evidence_level": "direct_official_flow_simplified_holder",
+        "plain_english": "Government mainly borrows through bonds in this flow view.",
+        "jargon": "Recorded as general government net incurrence of debt securities liabilities. Drawn from financial institutions for teaching clarity.",
+        "default_visible": true
+      },
+      {
+        "id": "financial_to_firms_bonds",
+        "source": "financial_institutions",
+        "target": "firms",
+        "label": "Corporate bonds",
+        "label_cn": "企业债券融资",
+        "accounting_term": "Debt securities liabilities",
+        "accounting_term_cn": "债券负债增加",
+        "category": "securities",
+        "metaphor_role": "debt_channel",
+        "evidence_level": "direct_official_flow_simplified_holder",
+        "plain_english": "Firms also borrow through bonds, though this flow is much smaller than loans in 2023.",
+        "jargon": "Recorded as nonfinancial corporations' net incurrence of debt securities liabilities.",
+        "default_visible": false
+      },
+      {
+        "id": "firms_to_production_investment",
+        "source": "firms",
+        "target": "production_engine",
+        "label": "Business investment",
+        "label_cn": "企业资本形成",
+        "accounting_term": "Gross capital formation",
+        "accounting_term_cn": "资本形成总额",
+        "category": "investment",
+        "metaphor_role": "future_oxygen_generation",
+        "evidence_level": "direct_official_flow_simplified_process",
+        "plain_english": "Firms invest in capital formation. This can support future production, but it is not the same as immediate household consumption.",
+        "jargon": "Recorded as nonfinancial enterprise gross capital formation.",
+        "default_visible": true
+      },
+      {
+        "id": "government_to_production_public_investment",
+        "source": "government",
+        "target": "production_engine",
+        "label": "Public investment",
+        "label_cn": "公共资本形成",
+        "accounting_term": "Gross capital formation",
+        "accounting_term_cn": "资本形成总额",
+        "category": "investment",
+        "metaphor_role": "future_oxygen_generation",
+        "evidence_level": "direct_official_flow_simplified_process",
+        "plain_english": "Government investment can support future production and public infrastructure.",
+        "jargon": "Recorded as general government gross capital formation.",
+        "default_visible": true
+      },
+      {
+        "id": "households_to_production_capital_formation",
+        "source": "households",
+        "target": "production_engine",
+        "label": "Household capital formation",
+        "label_cn": "住户资本形成",
+        "accounting_term": "Gross capital formation",
+        "accounting_term_cn": "资本形成总额",
+        "category": "investment",
+        "metaphor_role": "housing_like_investment",
+        "evidence_level": "direct_official_flow_simplified_process",
+        "plain_english": "Households also have capital formation, often visually useful as a housing-like investment channel.",
+        "jargon": "Recorded as household gross capital formation.",
+        "default_visible": false
+      },
+      {
+        "id": "production_to_households_future_income",
+        "source": "production_engine",
+        "target": "households",
+        "label": "Future income loop",
+        "label_cn": "未来收入循环",
+        "accounting_term": "Conceptual feedback",
+        "accounting_term_cn": "概念性反馈",
+        "category": "conceptual",
+        "metaphor_role": "future_oxygen_generation",
+        "evidence_level": "conceptual_only",
+        "value": null,
+        "display_value": 1.0,
+        "plain_english": "Investment may support future production and income, but this table does not prove the quality or timing of that return.",
+        "jargon": "Conceptual feedback edge, not an official measured flow.",
+        "caveat": "Render dashed and do not scale alongside official flows.",
+        "default_visible": true
+      }
+    ],
+    "edge_categories": {
+      "labor_income": "Wages and compensation of employees.",
+      "goods_and_services": "Consumption, public consumption, and external demand.",
+      "fiscal": "Taxes, social contributions, transfers, subsidies, and public redistribution.",
+      "saving_and_deposits": "Deposits, insurance reserves, and financial saving flows.",
+      "credit": "Loans and other credit flows.",
+      "securities": "Bond financing and other debt securities.",
+      "investment": "Capital formation and productive investment channels.",
+      "external": "Cross-border demand and income flows.",
+      "conceptual": "Dashed explanatory links, not directly measured official flows."
+    },
+    "glossary": {
+      "compensation_of_employees": {
+        "label": "Compensation of employees",
+        "label_cn": "劳动者报酬",
+        "plain_english": "Wages and labor income paid to workers.",
+        "why_it_matters": "One of the main ways production becomes household income."
+      },
+      "actual_final_consumption": {
+        "label": "Actual final consumption",
+        "label_cn": "实际最终消费",
+        "plain_english": "Goods and services actually consumed by households or government.",
+        "why_it_matters": "The main oxygen-delivery path in the red-blood-cell metaphor."
+      },
+      "gross_saving": {
+        "label": "Gross saving",
+        "label_cn": "总储蓄",
+        "plain_english": "Income not used for current consumption after relevant accounting adjustments.",
+        "why_it_matters": "High saving can fund investment, but can also signal weak consumption circulation."
+      },
+      "deposits": {
+        "label": "Deposits",
+        "label_cn": "存款",
+        "plain_english": "Money placed in bank-like accounts.",
+        "why_it_matters": "Deposits are safe storage; large deposit accumulation can represent clotting."
+      },
+      "loans": {
+        "label": "Loans",
+        "label_cn": "贷款",
+        "plain_english": "Borrowed funds: liabilities for borrowers and assets for lenders.",
+        "why_it_matters": "Loans recirculate saved money into households, firms, and government."
+      },
+      "debt_securities": {
+        "label": "Debt securities / bonds",
+        "label_cn": "债券",
+        "plain_english": "Borrowing through bond issuance rather than direct loans.",
+        "why_it_matters": "In this graph, government financing is heavily bond-based."
+      },
+      "net_exports": {
+        "label": "Net exports",
+        "label_cn": "净出口",
+        "plain_english": "Exports minus imports. In the money-flow view, positive net export demand is drawn as payment from the rest of the world into domestic producers.",
+        "why_it_matters": "It shows the external-demand pipe in the circulation model."
+      },
+      "net_financial_investment": {
+        "label": "Net financial investment",
+        "label_cn": "净金融投资",
+        "plain_english": "Positive means net lending/surplus; negative means net borrowing/financing need.",
+        "why_it_matters": "A compact way to show which sectors supply funds and which need financing."
+      }
+    },
+    "scenes": [
+      {
+        "id": "domestic_demand_loop",
+        "title": "1. Domestic demand loop",
+        "description": "Firms pay income to households; households return demand through consumption.",
+        "active_nodes": [
+          "households",
+          "firms"
+        ],
+        "active_edges": [
+          "firms_to_households_wages",
+          "households_to_firms_consumption"
+        ]
+      },
+      {
+        "id": "savings_and_clotting",
+        "title": "2. Savings and clotting",
+        "description": "A large household flow enters deposits and insurance reserves rather than immediately returning as consumption.",
+        "active_nodes": [
+          "households",
+          "financial_institutions"
+        ],
+        "active_edges": [
+          "households_to_financial_deposits",
+          "households_to_financial_insurance"
+        ]
+      },
+      {
+        "id": "credit_recirculation",
+        "title": "3. Credit recirculation",
+        "description": "The financial system channels funds into loans and bonds for firms, households, and government.",
+        "active_nodes": [
+          "financial_institutions",
+          "firms",
+          "government",
+          "households"
+        ],
+        "active_edges": [
+          "financial_to_firms_loans",
+          "financial_to_households_loans",
+          "financial_to_government_bonds"
+        ]
+      },
+      {
+        "id": "fiscal_valve",
+        "title": "4. Government as fiscal valve",
+        "description": "Taxes and contributions enter government; transfers and public spending flow back out.",
+        "active_nodes": [
+          "government",
+          "households",
+          "firms"
+        ],
+        "active_edges": [
+          "households_to_government_current_transfers",
+          "firms_to_government_production_taxes",
+          "government_to_households_current_transfers",
+          "government_to_firms_public_consumption"
+        ]
+      },
+      {
+        "id": "external_demand",
+        "title": "5. External demand",
+        "description": "The rest of the world supplies demand through net exports. Goods flow outward; payment/demand flows inward.",
+        "active_nodes": [
+          "rest_of_world",
+          "firms"
+        ],
+        "active_edges": [
+          "rest_world_to_firms_net_exports"
+        ]
+      },
+      {
+        "id": "investment_loop",
+        "title": "6. Investment and future income",
+        "description": "Investment is not a dead end. It may create future production and income, but its return quality is not proven by this flow table.",
+        "active_nodes": [
+          "firms",
+          "government",
+          "households",
+          "production_engine"
+        ],
+        "active_edges": [
+          "firms_to_production_investment",
+          "government_to_production_public_investment",
+          "households_to_production_capital_formation",
+          "production_to_households_future_income"
+        ]
+      },
+      {
+        "id": "red_blood_cell_diagnosis",
+        "title": "7. Red blood cell diagnosis",
+        "description": "Healthy oxygen delivery, clotting, recirculation, debt dependence, and external oxygen are highlighted together.",
+        "active_nodes": [
+          "households",
+          "firms",
+          "financial_institutions",
+          "government",
+          "rest_of_world",
+          "production_engine"
+        ],
+        "active_edges": "all_measured_default_visible"
+      }
+    ]
+  },
+  "calculated": {
+    "description": "Automatically calculated from the sector-tree JSON files. Do not hand-edit unless you know you are overriding source data.",
+    "global_metrics": {
+      "domestic_value_added": 1294271.7,
+      "domestic_disposable_income": 1285587.7,
+      "domestic_final_consumption": 734594.8,
+      "domestic_gross_saving": 550992.9,
+      "domestic_gross_capital_formation": 532330.2,
+      "domestic_net_financial_investment_nonfinancial": 18641.6,
+      "domestic_net_financial_investment_financial": 18669.0,
+      "total_labor_compensation_paid": 687230.1,
+      "total_labor_compensation_received": 687736.0,
+      "net_exports_raw": -27176.5,
+      "net_exports_display_value": 27176.5,
+      "shares": {
+        "labor_compensation_paid_to_value_added": 0.530978,
+        "labor_compensation_received_to_value_added": 0.531369,
+        "domestic_consumption_to_value_added": 0.567574,
+        "domestic_saving_to_value_added": 0.425717,
+        "capital_formation_to_value_added": 0.411297,
+        "net_exports_to_value_added_abs": 0.020998
+      }
+    },
+    "nodes": {
+      "households": {
+        "metrics": {
+          "value_added": 270998.3,
+          "compensation_paid": 193372.9,
+          "compensation_received": 687736.0,
+          "disposable_income": 786890.6,
+          "adjusted_disposable_income": 877478.2,
+          "actual_final_consumption": 602708.2,
+          "gross_saving": 274770.1,
+          "gross_capital_formation": 109586.5,
+          "net_financial_investment_nonfinancial": 185236.3,
+          "net_financial_investment_financial": 178051.0,
+          "property_income_received": 59716.3,
+          "property_income_paid": 17760.0,
+          "current_transfers_received": 98761.1,
+          "current_transfers_paid": 118602.1,
+          "financial_uses_total": 226936.0,
+          "financial_sources_total": 48886.0,
+          "currency": 7337.0,
+          "deposits": 174137.0,
+          "time_deposits": 163916.0,
+          "demand_deposits": 6303.0,
+          "insurance_reserves": 36846.0,
+          "loan_liabilities": 46792.0
+        },
+        "indicators": {
+          "consumption_rate_adjusted_income": 0.686864,
+          "consumption_rate_disposable_income": 0.765936,
+          "saving_rate_adjusted_income": 0.313136,
+          "saving_rate_disposable_income": 0.349185,
+          "deposit_share_of_financial_assets": 0.76734,
+          "time_deposit_share_of_deposits": 0.941305,
+          "insurance_share_of_financial_assets": 0.162363,
+          "loan_liability_to_financial_asset_acquisition": 0.20619,
+          "net_lender_pressure": 0.202912
+        },
+        "health": {
+          "oxygen_delivery_score": 0.686864,
+          "clotting_score": 0.941305,
+          "deposit_concentration_score": 0.76734,
+          "swelling_score": 0.202912,
+          "borrowing_pressure_score": 0.20619,
+          "red_blood_cell_state": [
+            "oxygen_delivery",
+            "clotting",
+            "net_lender"
+          ],
+          "plain_english": "Households consume a large amount, but also save heavily. New household financial assets are concentrated in deposits, especially time deposits."
+        }
+      },
+      "firms": {
+        "metrics": {
+          "value_added": 798368.3,
+          "compensation_paid": 365599.1,
+          "production_taxes_paid": 92745.4,
+          "property_income_paid": 97946.2,
+          "property_income_received": 39015.3,
+          "current_transfers_paid": 38497.9,
+          "current_transfers_received": 3618.5,
+          "disposable_income": 246213.7,
+          "gross_saving": 246213.7,
+          "gross_capital_formation": 326953.6,
+          "net_financial_investment_nonfinancial": -120071.6,
+          "net_financial_investment_financial": -113059.0,
+          "financial_uses_total": 64190.0,
+          "financial_sources_total": 177249.0,
+          "deposits": 38039.0,
+          "loan_liabilities": 168041.0,
+          "debt_security_liabilities": 3560.0
+        },
+        "indicators": {
+          "wage_payout_rate_value_added": 0.457933,
+          "investment_to_value_added": 0.409527,
+          "investment_to_gross_saving": 1.327926,
+          "borrowing_gap_to_capital_formation": 0.367244,
+          "loan_share_of_financial_sources": 0.94805
+        },
+        "health": {
+          "wage_delivery_score": 0.457933,
+          "investment_intensity": 0.409527,
+          "borrowing_pressure_score": 0.367244,
+          "loan_dependency_score": 0.94805,
+          "red_blood_cell_state": [
+            "income_creation",
+            "investment_loop",
+            "debt_dependency"
+          ],
+          "plain_english": "Firms generate most value added and pay much labor income, but investment exceeds their own saving, so they rely heavily on borrowing."
+        }
+      },
+      "government": {
+        "metrics": {
+          "value_added": 130978.2,
+          "compensation_paid": 104567.4,
+          "production_taxes_received": 103970.7,
+          "current_transfers_received": 154392.2,
+          "current_transfers_paid": 88977.9,
+          "social_transfers_in_kind_paid": 90587.6,
+          "disposable_income": 211141.5,
+          "adjusted_disposable_income": 120553.9,
+          "actual_final_consumption": 131886.6,
+          "gross_saving": -11332.8,
+          "gross_capital_formation": 89983.4,
+          "net_financial_investment_nonfinancial": -82058.3,
+          "net_financial_investment_financial": -86331.0,
+          "financial_uses_total": 28889.0,
+          "financial_sources_total": 115220.0,
+          "deposits": 26100.0,
+          "loan_liabilities": 3745.0,
+          "debt_security_liabilities": 98178.0
+        },
+        "indicators": {
+          "saving_rate_disposable_income": -0.053674,
+          "public_consumption_to_disposable_income": 0.624636,
+          "public_investment_to_disposable_income": 0.426176,
+          "borrowing_gap_to_spending_and_investment": 0.369849,
+          "bond_share_of_financial_sources": 0.852092
+        },
+        "health": {
+          "saving_score": -0.053674,
+          "borrowing_pressure_score": 0.369849,
+          "bond_dependency_score": 0.852092,
+          "red_blood_cell_state": [
+            "redistribution_valve",
+            "debt_financed_spending"
+          ],
+          "plain_english": "In this flow view, government is not a hoarding node: it has negative saving and net borrowing, financed mainly through bonds."
+        }
+      },
+      "financial_institutions": {
+        "metrics": {
+          "value_added": 93926.9,
+          "compensation_paid": 23690.6,
+          "gross_saving": 41341.9,
+          "gross_capital_formation": 5806.8,
+          "net_financial_investment_nonfinancial": 35535.2,
+          "net_financial_investment_financial": 40008.0,
+          "financial_uses_total": 484202.0,
+          "financial_sources_total": 444194.0,
+          "deposit_assets": 22090.0,
+          "deposit_liabilities": 259242.0,
+          "loan_assets": 217685.0,
+          "loan_liabilities": 354.0,
+          "debt_security_assets": 136308.0,
+          "debt_security_liabilities": 35201.0,
+          "insurance_reserve_liabilities": 23769.0
+        },
+        "indicators": {
+          "loan_assets_to_deposit_liabilities": 0.839698,
+          "security_assets_to_deposit_liabilities": 0.525794,
+          "financial_asset_expansion_to_value_added": 5.155094,
+          "net_financial_investment_to_financial_uses": 0.082627
+        },
+        "health": {
+          "recirculation_score": 0.839698,
+          "securities_loop_score": 0.525794,
+          "financial_scale_score": 5.155094,
+          "red_blood_cell_state": [
+            "recirculation_pump",
+            "possible_empty_spinning"
+          ],
+          "plain_english": "The financial system transforms deposits and other liabilities into loans and securities. This is where saved money may re-enter production or loop through finance/debt."
+        }
+      },
+      "rest_of_world": {
+        "metrics": {
+          "net_exports_raw": -27176.5,
+          "compensation_paid_to_domestic": 1590.5,
+          "compensation_received_from_domestic": 1084.6,
+          "property_income_paid_to_domestic": 19557.5,
+          "property_income_received_from_domestic": 29561.2,
+          "current_transfers_paid_to_domestic": 2386.1,
+          "current_transfers_received_from_domestic": 1572.3,
+          "gross_saving": -18492.4,
+          "net_financial_investment_nonfinancial": -18471.3,
+          "net_financial_investment_financial": -18669.0,
+          "net_exports_display_value": 27176.5
+        },
+        "indicators": {
+          "net_exports_to_domestic_value_added_abs": 0.020998,
+          "external_property_income_balance": 10003.7,
+          "external_property_income_balance_to_value_added": 0.007729
+        },
+        "health": {
+          "external_oxygen_score": 0.020998,
+          "cross_border_income_pressure": 0.007729,
+          "red_blood_cell_state": [
+            "external_oxygen"
+          ],
+          "plain_english": "Rest of World represents external demand and cross-border income. Net exports are drawn as money/demand flowing from foreign buyers into domestic producers."
+        }
+      },
+      "production_engine": {
+        "metrics": {
+          "domestic_value_added": 1294271.7,
+          "gross_capital_formation": 532330.2,
+          "domestic_final_consumption": 734594.8
+        },
+        "indicators": {
+          "investment_intensity": 0.411297,
+          "consumption_intensity": 0.567574
+        },
+        "health": {
+          "investment_intensity": 0.411297,
+          "oxygen_delivery_score": 0.567574,
+          "red_blood_cell_state": [
+            "future_oxygen_generation"
+          ],
+          "plain_english": "Production is not a wallet. It is the engine turning labor, capital, and demand into income."
+        }
+      }
+    },
+    "edges": {
+      "firms_to_households_wages": {
+        "id": "firms_to_households_wages",
+        "source": "firms",
+        "target": "households",
+        "label": "Wages from firms",
+        "label_cn": "企业支付工资",
+        "accounting_term": "Compensation of employees",
+        "accounting_term_cn": "劳动者报酬",
+        "category": "labor_income",
+        "flow_nature": "labor_income",
+        "evidence_level": "direct_official_flow",
+        "value": 365599.1,
+        "display_value": 365599.1,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "income_creation",
+          "particle_style": "neutral",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "non_financial_enterprises",
+            "sector_label_cn": "非金融企业部门",
+            "sector_label_en": "Non-financial Enterprises",
+            "side": "uses",
+            "summary_key": "compensation_of_employees",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms pay labor income to households. This is a main pipe from production to household purchasing power.",
+          "jargon": "Recorded as compensation of employees paid by nonfinancial enterprises.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.282475,
+          "of_source_node_primary_metric": 0.457933,
+          "of_target_node_primary_metric": 0.416648,
+          "of_category_total": 0.740293,
+          "of_all_measured_edges": 0.132057
+        }
+      },
+      "financial_to_households_wages": {
+        "id": "financial_to_households_wages",
+        "source": "financial_institutions",
+        "target": "households",
+        "label": "Finance-sector wages",
+        "label_cn": "金融部门工资",
+        "accounting_term": "Compensation of employees",
+        "accounting_term_cn": "劳动者报酬",
+        "category": "labor_income",
+        "flow_nature": "labor_income",
+        "evidence_level": "direct_official_flow",
+        "value": 23690.6,
+        "display_value": 23690.6,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "income_creation",
+          "particle_style": "neutral",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "financial_institutions",
+            "sector_label_cn": "金融机构部门",
+            "sector_label_en": "Financial Institutions",
+            "side": "uses",
+            "summary_key": "compensation_of_employees",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Financial institutions also pay workers, adding to household income.",
+          "jargon": "Recorded as compensation of employees paid by financial institutions.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.018304,
+          "of_source_node_primary_metric": 0.048927,
+          "of_target_node_primary_metric": 0.026999,
+          "of_category_total": 0.047971,
+          "of_all_measured_edges": 0.008557
+        }
+      },
+      "government_to_households_wages": {
+        "id": "government_to_households_wages",
+        "source": "government",
+        "target": "households",
+        "label": "Public-sector wages",
+        "label_cn": "公共部门工资",
+        "accounting_term": "Compensation of employees",
+        "accounting_term_cn": "劳动者报酬",
+        "category": "labor_income",
+        "flow_nature": "labor_income",
+        "evidence_level": "direct_official_flow",
+        "value": 104567.4,
+        "display_value": 104567.4,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "income_creation",
+          "particle_style": "neutral",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "summary_key": "compensation_of_employees",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government pays wages to public-sector workers, moving public funds into household income.",
+          "jargon": "Recorded as compensation of employees paid by general government.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.080792,
+          "of_source_node_primary_metric": 0.495248,
+          "of_target_node_primary_metric": 0.119168,
+          "of_category_total": 0.211736,
+          "of_all_measured_edges": 0.03777
+        }
+      },
+      "households_to_firms_consumption": {
+        "id": "households_to_firms_consumption",
+        "source": "households",
+        "target": "firms",
+        "label": "Household consumption",
+        "label_cn": "居民消费支出",
+        "accounting_term": "Actual final consumption",
+        "accounting_term_cn": "实际最终消费",
+        "category": "goods_and_services",
+        "flow_nature": "goods_and_services",
+        "evidence_level": "direct_official_flow_simplified_counterparty",
+        "value": 602708.2,
+        "display_value": 602708.2,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "oxygen_delivery",
+          "particle_style": "healthy",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "households",
+            "sector_label_cn": "住户部门",
+            "sector_label_en": "Households",
+            "side": "uses",
+            "item_label_contains": "实际最终消费",
+            "item_label_cn": "十一、实际最终消费",
+            "item_label_en": "",
+            "path_cn": "十一、实际最终消费",
+            "path_en": "",
+            "row_index": 28
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Households use income to buy goods and services. This is the main oxygen-delivery path for domestic demand.",
+          "jargon": "The official value is household actual final consumption. It is drawn as Households → Firms for teaching clarity.",
+          "caveat": "The table records a household use, not a literal counterparty matrix."
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.465674,
+          "of_source_node_primary_metric": 0.686864,
+          "of_target_node_primary_metric": 0.754925,
+          "of_category_total": 0.820463,
+          "of_all_measured_edges": 0.217702
+        }
+      },
+      "government_to_firms_public_consumption": {
+        "id": "government_to_firms_public_consumption",
+        "source": "government",
+        "target": "firms",
+        "label": "Public consumption / procurement",
+        "label_cn": "政府消费 / 采购",
+        "accounting_term": "Government actual final consumption",
+        "accounting_term_cn": "政府实际最终消费",
+        "category": "goods_and_services",
+        "flow_nature": "goods_and_services",
+        "evidence_level": "direct_official_flow_simplified_counterparty",
+        "value": 131886.6,
+        "display_value": 131886.6,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "public_oxygen_delivery",
+          "particle_style": "healthy",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "item_label_contains": "实际最终消费",
+            "item_label_cn": "十一、实际最终消费",
+            "item_label_en": "",
+            "path_cn": "十一、实际最终消费",
+            "path_en": "",
+            "row_index": 28
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government spending on final consumption supports demand for goods and services.",
+          "jargon": "Recorded as government actual final consumption.",
+          "caveat": "Drawn as Government → Firms for teaching clarity."
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.1019,
+          "of_source_node_primary_metric": 0.624636,
+          "of_target_node_primary_metric": 0.165195,
+          "of_category_total": 0.179537,
+          "of_all_measured_edges": 0.047638
+        }
+      },
+      "rest_world_to_firms_net_exports": {
+        "id": "rest_world_to_firms_net_exports",
+        "source": "rest_of_world",
+        "target": "firms",
+        "label": "Foreign demand / net exports",
+        "label_cn": "外需 / 净出口",
+        "accounting_term": "Net exports",
+        "accounting_term_cn": "净出口",
+        "category": "external",
+        "flow_nature": "external",
+        "evidence_level": "direct_official_flow_sign_normalized",
+        "value": -27176.5,
+        "display_value": 27176.5,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "external_oxygen",
+          "particle_style": "healthy",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "rest_of_the_world",
+            "sector_label_cn": "国外",
+            "sector_label_en": "Rest of the World",
+            "side": "sources",
+            "item_label_contains": "净出口",
+            "item_label_cn": "一、净出口",
+            "item_label_en": "",
+            "path_cn": "一、净出口",
+            "path_en": "",
+            "row_index": 9,
+            "display_transform": "abs"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "External demand enters the domestic circulation through net exports. Goods flow outward; payment/demand flows inward.",
+          "jargon": "Net exports are exports minus imports. The graph uses absolute value and money-flow direction for teaching.",
+          "caveat": "This is net exports, not gross exports; it is not a full export-dependence measure."
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.020998,
+          "of_source_node_primary_metric": 1.0,
+          "of_target_node_primary_metric": 0.03404,
+          "of_category_total": 1.0,
+          "of_all_measured_edges": 0.009816
+        }
+      },
+      "households_to_government_current_transfers": {
+        "id": "households_to_government_current_transfers",
+        "source": "households",
+        "target": "government",
+        "label": "Taxes & social contributions",
+        "label_cn": "税收与社保缴款",
+        "accounting_term": "Current transfers paid by households",
+        "accounting_term_cn": "住户经常转移支出",
+        "category": "fiscal",
+        "flow_nature": "fiscal",
+        "evidence_level": "direct_official_flow_grouped",
+        "value": 118602.1,
+        "display_value": 118602.1,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "redistribution_valve_inflow",
+          "particle_style": "valve",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "households",
+            "sector_label_cn": "住户部门",
+            "sector_label_en": "Households",
+            "side": "uses",
+            "item_label_contains": "经常转移",
+            "item_label_cn": "七、经常转移",
+            "item_label_en": "",
+            "path_cn": "七、经常转移",
+            "path_en": "",
+            "row_index": 19
+          }
+        ],
+        "breakdown": [
+          {
+            "label": "所得税、财产税等经常税",
+            "label_cn": "（一）所得税、财产税等经常税",
+            "value": 15250.6,
+            "path_cn": "七、经常转移 / （一）所得税、财产税等经常税"
+          },
+          {
+            "label": "社会保险缴款",
+            "label_cn": "（二）社会保险缴款",
+            "value": 88748.8,
+            "path_cn": "七、经常转移 / （二）社会保险缴款"
+          },
+          {
+            "label": "社会补助",
+            "label_cn": "（四）社会补助",
+            "value": 759.7,
+            "path_cn": "七、经常转移 / （四）社会补助"
+          },
+          {
+            "label": "其他",
+            "label_cn": "（五）其他",
+            "value": 13843.0,
+            "path_cn": "七、经常转移 / （五）其他"
+          }
+        ],
+        "explain": {
+          "plain_english": "Households send money into the fiscal/social system through taxes, social contributions, and other current transfers.",
+          "jargon": "Grouped current transfers paid by households, including income/property taxes and social insurance contributions.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.091636,
+          "of_source_node_primary_metric": 0.135162,
+          "of_target_node_primary_metric": 0.561719,
+          "of_category_total": 0.303398,
+          "of_all_measured_edges": 0.04284
+        }
+      },
+      "firms_to_government_production_taxes": {
+        "id": "firms_to_government_production_taxes",
+        "source": "firms",
+        "target": "government",
+        "label": "Production taxes",
+        "label_cn": "生产税净额",
+        "accounting_term": "Net taxes on production",
+        "accounting_term_cn": "生产税净额",
+        "category": "fiscal",
+        "flow_nature": "fiscal",
+        "evidence_level": "direct_official_flow",
+        "value": 92745.4,
+        "display_value": 92745.4,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "redistribution_valve_inflow",
+          "particle_style": "valve",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "non_financial_enterprises",
+            "sector_label_cn": "非金融企业部门",
+            "sector_label_en": "Non-financial Enterprises",
+            "side": "uses",
+            "item_label_contains": "生产税净额",
+            "item_label_cn": "四、生产税净额",
+            "item_label_en": "",
+            "path_cn": "四、生产税净额",
+            "path_en": "",
+            "row_index": 12
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms pay net production taxes to government as part of the production process.",
+          "jargon": "Recorded as net taxes on production paid by nonfinancial enterprises.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.071658,
+          "of_source_node_primary_metric": 0.116169,
+          "of_target_node_primary_metric": 0.439257,
+          "of_category_total": 0.237253,
+          "of_all_measured_edges": 0.0335
+        }
+      },
+      "government_to_households_current_transfers": {
+        "id": "government_to_households_current_transfers",
+        "source": "government",
+        "target": "households",
+        "label": "Social benefits & transfers",
+        "label_cn": "社会福利与转移",
+        "accounting_term": "Current transfers paid by government",
+        "accounting_term_cn": "政府经常转移支出",
+        "category": "fiscal",
+        "flow_nature": "fiscal",
+        "evidence_level": "direct_official_flow_simplified_counterparty",
+        "value": 88977.9,
+        "display_value": 88977.9,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "redistribution_valve_outflow",
+          "particle_style": "valve",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "item_label_contains": "经常转移",
+            "item_label_cn": "七、经常转移",
+            "item_label_en": "",
+            "path_cn": "七、经常转移",
+            "path_en": "",
+            "row_index": 19
+          }
+        ],
+        "breakdown": [
+          {
+            "label": "社会保险福利",
+            "label_cn": "（三）社会保险福利",
+            "value": 70896.5,
+            "path_cn": "七、经常转移 / （三）社会保险福利"
+          },
+          {
+            "label": "社会补助",
+            "label_cn": "（四）社会补助",
+            "value": 17803.9,
+            "path_cn": "七、经常转移 / （四）社会补助"
+          },
+          {
+            "label": "其他",
+            "label_cn": "（五）其他",
+            "value": 277.6,
+            "path_cn": "七、经常转移 / （五）其他"
+          }
+        ],
+        "explain": {
+          "plain_english": "Government moves money back toward households through social benefits and transfers.",
+          "jargon": "Recorded as current transfers paid by general government. Drawn toward households for teaching clarity.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.068747,
+          "of_source_node_primary_metric": 0.421414,
+          "of_target_node_primary_metric": 0.101402,
+          "of_category_total": 0.227616,
+          "of_all_measured_edges": 0.032139
+        }
+      },
+      "government_to_households_social_transfers_in_kind": {
+        "id": "government_to_households_social_transfers_in_kind",
+        "source": "government",
+        "target": "households",
+        "label": "Services in kind",
+        "label_cn": "实物社会转移",
+        "accounting_term": "Social transfers in kind",
+        "accounting_term_cn": "实物社会转移",
+        "category": "fiscal",
+        "flow_nature": "fiscal",
+        "evidence_level": "direct_official_flow_non_cash_service",
+        "value": 90587.6,
+        "display_value": 90587.6,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "public_service_delivery",
+          "particle_style": "service",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "item_label_contains": "实物社会转移",
+            "item_label_cn": "九、实物社会转移",
+            "item_label_en": "",
+            "path_cn": "九、实物社会转移",
+            "path_en": "",
+            "row_index": 26
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government provides services to households, such as public services consumed by households even if not paid as cash.",
+          "jargon": "Social transfers in kind are not ordinary cash payments; render separately or with a distinct style.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.069991,
+          "of_source_node_primary_metric": 0.429037,
+          "of_target_node_primary_metric": 0.103236,
+          "of_category_total": 0.231733,
+          "of_all_measured_edges": 0.032721
+        }
+      },
+      "households_to_financial_deposits": {
+        "id": "households_to_financial_deposits",
+        "source": "households",
+        "target": "financial_institutions",
+        "label": "Deposits",
+        "label_cn": "存款",
+        "accounting_term": "Net acquisition of deposits",
+        "accounting_term_cn": "存款资产增加",
+        "category": "saving_and_deposits",
+        "flow_nature": "saving_and_deposits",
+        "evidence_level": "direct_official_flow",
+        "value": 174137.0,
+        "display_value": 174137.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "clotting",
+          "particle_style": "slow",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "households",
+            "sector_label_cn": "住户",
+            "sector_label_en": "Households",
+            "summary_key": "deposits",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Households place a large share of new financial assets into deposits. This is the main clotting cue.",
+          "jargon": "In the financial account, household deposits are net acquisition of deposit assets.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.134544,
+          "of_source_node_primary_metric": 0.198452,
+          "of_target_node_primary_metric": 0.359637,
+          "of_category_total": 0.632945,
+          "of_all_measured_edges": 0.062899
+        }
+      },
+      "households_to_financial_insurance": {
+        "id": "households_to_financial_insurance",
+        "source": "households",
+        "target": "financial_institutions",
+        "label": "Insurance reserves",
+        "label_cn": "保险准备金",
+        "accounting_term": "Insurance technical reserves",
+        "accounting_term_cn": "保险准备金",
+        "category": "saving_and_deposits",
+        "flow_nature": "saving_and_deposits",
+        "evidence_level": "direct_official_flow",
+        "value": 36846.0,
+        "display_value": 36846.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "slow_saving_pool",
+          "particle_style": "slow",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "households",
+            "sector_label_cn": "住户",
+            "sector_label_en": "Households",
+            "summary_key": "insurance_reserves",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Some household saving enters insurance-reserve-like financial claims.",
+          "jargon": "Recorded as household net acquisition of insurance technical reserves.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.028469,
+          "of_source_node_primary_metric": 0.041991,
+          "of_target_node_primary_metric": 0.076096,
+          "of_category_total": 0.133926,
+          "of_all_measured_edges": 0.013309
+        }
+      },
+      "firms_to_financial_deposits": {
+        "id": "firms_to_financial_deposits",
+        "source": "firms",
+        "target": "financial_institutions",
+        "label": "Enterprise deposits",
+        "label_cn": "企业存款",
+        "accounting_term": "Net acquisition of deposits",
+        "accounting_term_cn": "存款资产增加",
+        "category": "saving_and_deposits",
+        "flow_nature": "saving_and_deposits",
+        "evidence_level": "direct_official_flow",
+        "value": 38039.0,
+        "display_value": 38039.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "storage_pool",
+          "particle_style": "slow",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "non_financial_corporations",
+            "sector_label_cn": "非金融企业",
+            "sector_label_en": "Non-financial Corporations",
+            "summary_key": "deposits",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms also increase deposits, storing some money in the financial system.",
+          "jargon": "Recorded as nonfinancial corporations' net acquisition of deposits.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.02939,
+          "of_source_node_primary_metric": 0.047646,
+          "of_target_node_primary_metric": 0.07856,
+          "of_category_total": 0.138262,
+          "of_all_measured_edges": 0.01374
+        }
+      },
+      "government_to_financial_deposits": {
+        "id": "government_to_financial_deposits",
+        "source": "government",
+        "target": "financial_institutions",
+        "label": "Government deposits",
+        "label_cn": "政府存款",
+        "accounting_term": "Net acquisition of deposits",
+        "accounting_term_cn": "存款资产增加",
+        "category": "saving_and_deposits",
+        "flow_nature": "saving_and_deposits",
+        "evidence_level": "direct_official_flow",
+        "value": 26100.0,
+        "display_value": 26100.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "storage_pool",
+          "particle_style": "slow",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "general_government",
+            "sector_label_cn": "广义政府",
+            "sector_label_en": "General Government",
+            "summary_key": "deposits",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government also holds/increases deposits, but in this flow view it is still a net borrower overall.",
+          "jargon": "Recorded as general government net acquisition of deposits.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.020166,
+          "of_source_node_primary_metric": 0.123614,
+          "of_target_node_primary_metric": 0.053903,
+          "of_category_total": 0.094867,
+          "of_all_measured_edges": 0.009427
+        }
+      },
+      "financial_to_households_loans": {
+        "id": "financial_to_households_loans",
+        "source": "financial_institutions",
+        "target": "households",
+        "label": "Household loans",
+        "label_cn": "住户贷款",
+        "accounting_term": "Net incurrence of loan liabilities",
+        "accounting_term_cn": "贷款负债增加",
+        "category": "credit",
+        "flow_nature": "credit",
+        "evidence_level": "direct_official_flow_simplified_lender",
+        "value": 46792.0,
+        "display_value": 46792.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "credit_recirculation",
+          "particle_style": "pumped",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "households",
+            "sector_label_cn": "住户",
+            "sector_label_en": "Households",
+            "summary_key": "loans",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Households borrow, receiving credit but also taking on liabilities.",
+          "jargon": "Recorded as household net incurrence of loan liabilities. Drawn from the financial system for teaching clarity.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.036153,
+          "of_source_node_primary_metric": 0.096637,
+          "of_target_node_primary_metric": 0.053326,
+          "of_category_total": 0.214075,
+          "of_all_measured_edges": 0.016902
+        }
+      },
+      "financial_to_firms_loans": {
+        "id": "financial_to_firms_loans",
+        "source": "financial_institutions",
+        "target": "firms",
+        "label": "Firm loans",
+        "label_cn": "企业贷款",
+        "accounting_term": "Net incurrence of loan liabilities",
+        "accounting_term_cn": "贷款负债增加",
+        "category": "credit",
+        "flow_nature": "credit",
+        "evidence_level": "direct_official_flow_simplified_lender",
+        "value": 168041.0,
+        "display_value": 168041.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "credit_recirculation",
+          "particle_style": "pumped",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "non_financial_corporations",
+            "sector_label_cn": "非金融企业",
+            "sector_label_en": "Non-financial Corporations",
+            "summary_key": "loans",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms rely heavily on loans to finance activity and investment.",
+          "jargon": "Recorded as nonfinancial corporations' net incurrence of loan liabilities.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.129834,
+          "of_source_node_primary_metric": 0.347047,
+          "of_target_node_primary_metric": 0.210481,
+          "of_category_total": 0.768792,
+          "of_all_measured_edges": 0.060697
+        }
+      },
+      "financial_to_government_loans": {
+        "id": "financial_to_government_loans",
+        "source": "financial_institutions",
+        "target": "government",
+        "label": "Government loans",
+        "label_cn": "政府贷款",
+        "accounting_term": "Net incurrence of loan liabilities",
+        "accounting_term_cn": "贷款负债增加",
+        "category": "credit",
+        "flow_nature": "credit",
+        "evidence_level": "direct_official_flow_simplified_lender",
+        "value": 3745.0,
+        "display_value": 3745.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "credit_recirculation",
+          "particle_style": "pumped",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "general_government",
+            "sector_label_cn": "广义政府",
+            "sector_label_en": "General Government",
+            "summary_key": "loans",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government loan borrowing exists but is much smaller than bond financing in this dataset.",
+          "jargon": "Recorded as general government net incurrence of loan liabilities.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.002894,
+          "of_source_node_primary_metric": 0.007734,
+          "of_target_node_primary_metric": 0.017737,
+          "of_category_total": 0.017133,
+          "of_all_measured_edges": 0.001353
+        }
+      },
+      "financial_to_government_bonds": {
+        "id": "financial_to_government_bonds",
+        "source": "financial_institutions",
+        "target": "government",
+        "label": "Government bonds",
+        "label_cn": "政府债券融资",
+        "accounting_term": "Debt securities liabilities",
+        "accounting_term_cn": "债券负债增加",
+        "category": "securities",
+        "flow_nature": "securities",
+        "evidence_level": "direct_official_flow_simplified_holder",
+        "value": 98178.0,
+        "display_value": 98178.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "debt_channel",
+          "particle_style": "warning",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "general_government",
+            "sector_label_cn": "广义政府",
+            "sector_label_en": "General Government",
+            "summary_key": "debt_securities",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government mainly borrows through bonds in this flow view.",
+          "jargon": "Recorded as general government net incurrence of debt securities liabilities. Drawn from financial institutions for teaching clarity.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.075856,
+          "of_source_node_primary_metric": 0.202762,
+          "of_target_node_primary_metric": 0.464987,
+          "of_category_total": 0.965008,
+          "of_all_measured_edges": 0.035462
+        }
+      },
+      "financial_to_firms_bonds": {
+        "id": "financial_to_firms_bonds",
+        "source": "financial_institutions",
+        "target": "firms",
+        "label": "Corporate bonds",
+        "label_cn": "企业债券融资",
+        "accounting_term": "Debt securities liabilities",
+        "accounting_term_cn": "债券负债增加",
+        "category": "securities",
+        "flow_nature": "securities",
+        "evidence_level": "direct_official_flow_simplified_holder",
+        "value": 3560.0,
+        "display_value": 3560.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "debt_channel",
+          "particle_style": "warning",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "non_financial_corporations",
+            "sector_label_cn": "非金融企业",
+            "sector_label_en": "Non-financial Corporations",
+            "summary_key": "debt_securities",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms also borrow through bonds, though this flow is much smaller than loans in 2023.",
+          "jargon": "Recorded as nonfinancial corporations' net incurrence of debt securities liabilities.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.002751,
+          "of_source_node_primary_metric": 0.007352,
+          "of_target_node_primary_metric": 0.004459,
+          "of_category_total": 0.034992,
+          "of_all_measured_edges": 0.001286
+        }
+      },
+      "firms_to_production_investment": {
+        "id": "firms_to_production_investment",
+        "source": "firms",
+        "target": "production_engine",
+        "label": "Business investment",
+        "label_cn": "企业资本形成",
+        "accounting_term": "Gross capital formation",
+        "accounting_term_cn": "资本形成总额",
+        "category": "investment",
+        "flow_nature": "investment",
+        "evidence_level": "direct_official_flow_simplified_process",
+        "value": 326953.6,
+        "display_value": 326953.6,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "future_oxygen_generation",
+          "particle_style": "future",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "non_financial_enterprises",
+            "sector_label_cn": "非金融企业部门",
+            "sector_label_en": "Non-financial Enterprises",
+            "side": "uses",
+            "summary_key": "gross_capital_formation",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms invest in capital formation. This can support future production, but it is not the same as immediate household consumption.",
+          "jargon": "Recorded as nonfinancial enterprise gross capital formation.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.252616,
+          "of_source_node_primary_metric": 0.409527,
+          "of_target_node_primary_metric": 0.252616,
+          "of_category_total": 0.620967,
+          "of_all_measured_edges": 0.118098
+        }
+      },
+      "government_to_production_public_investment": {
+        "id": "government_to_production_public_investment",
+        "source": "government",
+        "target": "production_engine",
+        "label": "Public investment",
+        "label_cn": "公共资本形成",
+        "accounting_term": "Gross capital formation",
+        "accounting_term_cn": "资本形成总额",
+        "category": "investment",
+        "flow_nature": "investment",
+        "evidence_level": "direct_official_flow_simplified_process",
+        "value": 89983.4,
+        "display_value": 89983.4,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "future_oxygen_generation",
+          "particle_style": "future",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "summary_key": "gross_capital_formation",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government investment can support future production and public infrastructure.",
+          "jargon": "Recorded as general government gross capital formation.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.069524,
+          "of_source_node_primary_metric": 0.426176,
+          "of_target_node_primary_metric": 0.069524,
+          "of_category_total": 0.170901,
+          "of_all_measured_edges": 0.032503
+        }
+      },
+      "households_to_production_capital_formation": {
+        "id": "households_to_production_capital_formation",
+        "source": "households",
+        "target": "production_engine",
+        "label": "Household capital formation",
+        "label_cn": "住户资本形成",
+        "accounting_term": "Gross capital formation",
+        "accounting_term_cn": "资本形成总额",
+        "category": "investment",
+        "flow_nature": "investment",
+        "evidence_level": "direct_official_flow_simplified_process",
+        "value": 109586.5,
+        "display_value": 109586.5,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "housing_like_investment",
+          "particle_style": "future",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "households",
+            "sector_label_cn": "住户部门",
+            "sector_label_en": "Households",
+            "side": "uses",
+            "summary_key": "gross_capital_formation",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Households also have capital formation, often visually useful as a housing-like investment channel.",
+          "jargon": "Recorded as household gross capital formation.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.08467,
+          "of_source_node_primary_metric": 0.124888,
+          "of_target_node_primary_metric": 0.08467,
+          "of_category_total": 0.208132,
+          "of_all_measured_edges": 0.039583
+        }
+      },
+      "production_to_households_future_income": {
+        "id": "production_to_households_future_income",
+        "source": "production_engine",
+        "target": "households",
+        "label": "Future income loop",
+        "label_cn": "未来收入循环",
+        "accounting_term": "Conceptual feedback",
+        "accounting_term_cn": "概念性反馈",
+        "category": "conceptual",
+        "flow_nature": "conceptual",
+        "evidence_level": "conceptual_only",
+        "value": null,
+        "display_value": 1.0,
+        "unit": null,
+        "metaphor": {
+          "role": "future_oxygen_generation",
+          "particle_style": "future",
+          "diagnostic_weight": 0.0
+        },
+        "source_refs": [],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Investment may support future production and income, but this table does not prove the quality or timing of that return.",
+          "jargon": "Conceptual feedback edge, not an official measured flow.",
+          "caveat": "Render dashed and do not scale alongside official flows."
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": false,
+          "stroke_style": "dashed",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": null,
+          "of_source_node_primary_metric": null,
+          "of_target_node_primary_metric": null,
+          "of_category_total": null,
+          "of_all_measured_edges": null
+        }
+      }
+    },
+    "diagnostics": {
+      "red_blood_cell": {
+        "oxygen_delivery": {
+          "definition": "Money reaches final demand and supports producer revenue.",
+          "main_edges": [
+            "households_to_firms_consumption",
+            "government_to_firms_public_consumption",
+            "rest_world_to_firms_net_exports"
+          ],
+          "score": 0.588572,
+          "components": {
+            "domestic_final_consumption_to_value_added": 0.567574,
+            "net_exports_to_value_added_abs": 0.020998,
+            "household_consumption_rate_adjusted_income": 0.686864
+          }
+        },
+        "clotting": {
+          "definition": "Money pools as deposits or low-velocity financial storage.",
+          "main_edges": [
+            "households_to_financial_deposits",
+            "households_to_financial_insurance"
+          ],
+          "score": 0.941305,
+          "components": {
+            "household_deposit_share_of_financial_assets": 0.76734,
+            "household_time_deposit_share": 0.941305,
+            "household_saving_rate_adjusted_income": 0.313136
+          }
+        },
+        "recirculation": {
+          "definition": "The financial system turns deposits and liabilities into credit and securities.",
+          "main_edges": [
+            "financial_to_firms_loans",
+            "financial_to_households_loans",
+            "financial_to_government_bonds"
+          ],
+          "score": 0.839698,
+          "components": {
+            "financial_loans_to_deposit_liabilities": 0.839698,
+            "financial_security_assets_to_deposit_liabilities": 0.525794,
+            "financial_asset_expansion_to_value_added": 5.155094
+          }
+        },
+        "empty_spinning": {
+          "definition": "Funds circulate through investment/credit loops without necessarily becoming household consumption quickly.",
+          "main_edges": [
+            "financial_to_firms_loans",
+            "financial_to_government_bonds",
+            "firms_to_production_investment",
+            "government_to_production_public_investment"
+          ],
+          "score": 0.369849,
+          "components": {
+            "firm_borrowing_gap_to_capital_formation": 0.367244,
+            "government_borrowing_gap_to_spending_and_investment": 0.369849,
+            "firm_investment_to_gross_saving": 1.327926
+          },
+          "caveat": "This is an interpretive diagnostic, not an official statistical category."
+        },
+        "external_oxygen": {
+          "definition": "External demand enters the domestic circulation through the Rest of World node.",
+          "main_edges": [
+            "rest_world_to_firms_net_exports"
+          ],
+          "score": 0.020998,
+          "components": {
+            "net_exports_to_domestic_value_added_abs": 0.020998
+          },
+          "caveat": "Uses net exports, not gross exports; not a complete export-reliance indicator."
+        },
+        "debt_absorption": {
+          "definition": "Future income is absorbed by repayment or debt service.",
+          "main_edges": [],
+          "score": null,
+          "caveat": "Debt service is not cleanly measured as a direct edge in the current flow tree files. Use as annotation only."
+        }
+      }
+    }
+  },
+  "graph": {
+    "description": "Merged D3-ready graph. D3 can read this directly.",
+    "nodes": [
+      {
+        "id": "households",
+        "label": "Households",
+        "label_cn": "住户部门",
+        "node_type": "actor",
+        "actor_type": "institutional_sector",
+        "is_money_holder": true,
+        "zone": "domestic_real_economy",
+        "layout": {
+          "x": 0.16,
+          "y": 0.48
+        },
+        "short_explanation": "People and families: receive income, consume, save, deposit, and borrow.",
+        "visual_hints": {
+          "size_metric": "adjusted_disposable_income",
+          "ring_metric": "clotting_score",
+          "color_role": "household",
+          "badge_metrics": [
+            "actual_final_consumption",
+            "gross_saving",
+            "deposits"
+          ]
+        },
+        "metrics": {
+          "value_added": 270998.3,
+          "compensation_paid": 193372.9,
+          "compensation_received": 687736.0,
+          "disposable_income": 786890.6,
+          "adjusted_disposable_income": 877478.2,
+          "actual_final_consumption": 602708.2,
+          "gross_saving": 274770.1,
+          "gross_capital_formation": 109586.5,
+          "net_financial_investment_nonfinancial": 185236.3,
+          "net_financial_investment_financial": 178051.0,
+          "property_income_received": 59716.3,
+          "property_income_paid": 17760.0,
+          "current_transfers_received": 98761.1,
+          "current_transfers_paid": 118602.1,
+          "financial_uses_total": 226936.0,
+          "financial_sources_total": 48886.0,
+          "currency": 7337.0,
+          "deposits": 174137.0,
+          "time_deposits": 163916.0,
+          "demand_deposits": 6303.0,
+          "insurance_reserves": 36846.0,
+          "loan_liabilities": 46792.0
+        },
+        "indicators": {
+          "consumption_rate_adjusted_income": 0.686864,
+          "consumption_rate_disposable_income": 0.765936,
+          "saving_rate_adjusted_income": 0.313136,
+          "saving_rate_disposable_income": 0.349185,
+          "deposit_share_of_financial_assets": 0.76734,
+          "time_deposit_share_of_deposits": 0.941305,
+          "insurance_share_of_financial_assets": 0.162363,
+          "loan_liability_to_financial_asset_acquisition": 0.20619,
+          "net_lender_pressure": 0.202912
+        },
+        "health": {
+          "oxygen_delivery_score": 0.686864,
+          "clotting_score": 0.941305,
+          "deposit_concentration_score": 0.76734,
+          "swelling_score": 0.202912,
+          "borrowing_pressure_score": 0.20619,
+          "red_blood_cell_state": [
+            "oxygen_delivery",
+            "clotting",
+            "net_lender"
+          ],
+          "plain_english": "Households consume a large amount, but also save heavily. New household financial assets are concentrated in deposits, especially time deposits."
+        }
+      },
+      {
+        "id": "firms",
+        "label": "Firms / Producers",
+        "label_cn": "非金融企业 / 生产者",
+        "node_type": "actor",
+        "actor_type": "institutional_sector",
+        "is_money_holder": true,
+        "zone": "domestic_real_economy",
+        "layout": {
+          "x": 0.66,
+          "y": 0.48
+        },
+        "short_explanation": "Nonfinancial firms: produce goods/services, pay wages and taxes, borrow, and invest.",
+        "visual_hints": {
+          "size_metric": "value_added",
+          "ring_metric": "borrowing_pressure_score",
+          "color_role": "firms",
+          "badge_metrics": [
+            "value_added",
+            "compensation_paid",
+            "gross_capital_formation"
+          ]
+        },
+        "metrics": {
+          "value_added": 798368.3,
+          "compensation_paid": 365599.1,
+          "production_taxes_paid": 92745.4,
+          "property_income_paid": 97946.2,
+          "property_income_received": 39015.3,
+          "current_transfers_paid": 38497.9,
+          "current_transfers_received": 3618.5,
+          "disposable_income": 246213.7,
+          "gross_saving": 246213.7,
+          "gross_capital_formation": 326953.6,
+          "net_financial_investment_nonfinancial": -120071.6,
+          "net_financial_investment_financial": -113059.0,
+          "financial_uses_total": 64190.0,
+          "financial_sources_total": 177249.0,
+          "deposits": 38039.0,
+          "loan_liabilities": 168041.0,
+          "debt_security_liabilities": 3560.0
+        },
+        "indicators": {
+          "wage_payout_rate_value_added": 0.457933,
+          "investment_to_value_added": 0.409527,
+          "investment_to_gross_saving": 1.327926,
+          "borrowing_gap_to_capital_formation": 0.367244,
+          "loan_share_of_financial_sources": 0.94805
+        },
+        "health": {
+          "wage_delivery_score": 0.457933,
+          "investment_intensity": 0.409527,
+          "borrowing_pressure_score": 0.367244,
+          "loan_dependency_score": 0.94805,
+          "red_blood_cell_state": [
+            "income_creation",
+            "investment_loop",
+            "debt_dependency"
+          ],
+          "plain_english": "Firms generate most value added and pay much labor income, but investment exceeds their own saving, so they rely heavily on borrowing."
+        }
+      },
+      {
+        "id": "financial_institutions",
+        "label": "Financial Institutions / Banks",
+        "label_cn": "金融机构 / 银行等",
+        "node_type": "actor",
+        "actor_type": "institutional_sector",
+        "is_money_holder": true,
+        "zone": "financial_system",
+        "layout": {
+          "x": 0.38,
+          "y": 0.78
+        },
+        "short_explanation": "The financial transformer: receives deposits and other liabilities, acquires loans and securities as assets.",
+        "visual_hints": {
+          "size_metric": "financial_uses_total",
+          "ring_metric": "recirculation_score",
+          "color_role": "finance",
+          "badge_metrics": [
+            "deposit_liabilities",
+            "loan_assets",
+            "debt_security_assets"
+          ]
+        },
+        "metrics": {
+          "value_added": 93926.9,
+          "compensation_paid": 23690.6,
+          "gross_saving": 41341.9,
+          "gross_capital_formation": 5806.8,
+          "net_financial_investment_nonfinancial": 35535.2,
+          "net_financial_investment_financial": 40008.0,
+          "financial_uses_total": 484202.0,
+          "financial_sources_total": 444194.0,
+          "deposit_assets": 22090.0,
+          "deposit_liabilities": 259242.0,
+          "loan_assets": 217685.0,
+          "loan_liabilities": 354.0,
+          "debt_security_assets": 136308.0,
+          "debt_security_liabilities": 35201.0,
+          "insurance_reserve_liabilities": 23769.0
+        },
+        "indicators": {
+          "loan_assets_to_deposit_liabilities": 0.839698,
+          "security_assets_to_deposit_liabilities": 0.525794,
+          "financial_asset_expansion_to_value_added": 5.155094,
+          "net_financial_investment_to_financial_uses": 0.082627
+        },
+        "health": {
+          "recirculation_score": 0.839698,
+          "securities_loop_score": 0.525794,
+          "financial_scale_score": 5.155094,
+          "red_blood_cell_state": [
+            "recirculation_pump",
+            "possible_empty_spinning"
+          ],
+          "plain_english": "The financial system transforms deposits and other liabilities into loans and securities. This is where saved money may re-enter production or loop through finance/debt."
+        }
+      },
+      {
+        "id": "government",
+        "label": "Government",
+        "label_cn": "广义政府",
+        "node_type": "actor",
+        "actor_type": "institutional_sector",
+        "is_money_holder": true,
+        "zone": "fiscal_system",
+        "layout": {
+          "x": 0.46,
+          "y": 0.17
+        },
+        "short_explanation": "The fiscal valve: taxes, transfers, public consumption, public investment, and bond financing.",
+        "visual_hints": {
+          "size_metric": "disposable_income",
+          "ring_metric": "borrowing_pressure_score",
+          "color_role": "government",
+          "badge_metrics": [
+            "actual_final_consumption",
+            "gross_capital_formation",
+            "debt_security_liabilities"
+          ]
+        },
+        "metrics": {
+          "value_added": 130978.2,
+          "compensation_paid": 104567.4,
+          "production_taxes_received": 103970.7,
+          "current_transfers_received": 154392.2,
+          "current_transfers_paid": 88977.9,
+          "social_transfers_in_kind_paid": 90587.6,
+          "disposable_income": 211141.5,
+          "adjusted_disposable_income": 120553.9,
+          "actual_final_consumption": 131886.6,
+          "gross_saving": -11332.8,
+          "gross_capital_formation": 89983.4,
+          "net_financial_investment_nonfinancial": -82058.3,
+          "net_financial_investment_financial": -86331.0,
+          "financial_uses_total": 28889.0,
+          "financial_sources_total": 115220.0,
+          "deposits": 26100.0,
+          "loan_liabilities": 3745.0,
+          "debt_security_liabilities": 98178.0
+        },
+        "indicators": {
+          "saving_rate_disposable_income": -0.053674,
+          "public_consumption_to_disposable_income": 0.624636,
+          "public_investment_to_disposable_income": 0.426176,
+          "borrowing_gap_to_spending_and_investment": 0.369849,
+          "bond_share_of_financial_sources": 0.852092
+        },
+        "health": {
+          "saving_score": -0.053674,
+          "borrowing_pressure_score": 0.369849,
+          "bond_dependency_score": 0.852092,
+          "red_blood_cell_state": [
+            "redistribution_valve",
+            "debt_financed_spending"
+          ],
+          "plain_english": "In this flow view, government is not a hoarding node: it has negative saving and net borrowing, financed mainly through bonds."
+        }
+      },
+      {
+        "id": "rest_of_world",
+        "label": "Rest of World",
+        "label_cn": "国外部门",
+        "node_type": "actor",
+        "actor_type": "external_sector",
+        "is_money_holder": true,
+        "zone": "external",
+        "layout": {
+          "x": 0.89,
+          "y": 0.36
+        },
+        "short_explanation": "External demand and cross-border income/financial flows.",
+        "visual_hints": {
+          "size_metric": "net_exports_display_value",
+          "ring_metric": "external_oxygen_score",
+          "color_role": "external",
+          "badge_metrics": [
+            "net_exports_display_value",
+            "property_income_received_from_domestic"
+          ]
+        },
+        "metrics": {
+          "net_exports_raw": -27176.5,
+          "compensation_paid_to_domestic": 1590.5,
+          "compensation_received_from_domestic": 1084.6,
+          "property_income_paid_to_domestic": 19557.5,
+          "property_income_received_from_domestic": 29561.2,
+          "current_transfers_paid_to_domestic": 2386.1,
+          "current_transfers_received_from_domestic": 1572.3,
+          "gross_saving": -18492.4,
+          "net_financial_investment_nonfinancial": -18471.3,
+          "net_financial_investment_financial": -18669.0,
+          "net_exports_display_value": 27176.5
+        },
+        "indicators": {
+          "net_exports_to_domestic_value_added_abs": 0.020998,
+          "external_property_income_balance": 10003.7,
+          "external_property_income_balance_to_value_added": 0.007729
+        },
+        "health": {
+          "external_oxygen_score": 0.020998,
+          "cross_border_income_pressure": 0.007729,
+          "red_blood_cell_state": [
+            "external_oxygen"
+          ],
+          "plain_english": "Rest of World represents external demand and cross-border income. Net exports are drawn as money/demand flowing from foreign buyers into domestic producers."
+        }
+      },
+      {
+        "id": "production_engine",
+        "label": "Production Engine",
+        "label_cn": "生产引擎",
+        "node_type": "process",
+        "actor_type": null,
+        "is_money_holder": false,
+        "zone": "process",
+        "layout": {
+          "x": 0.77,
+          "y": 0.68
+        },
+        "short_explanation": "Not a wallet: a process that turns labor, capital, and demand into future income.",
+        "visual_hints": {
+          "size_metric": "domestic_value_added",
+          "ring_metric": "investment_intensity",
+          "color_role": "production",
+          "badge_metrics": [
+            "domestic_value_added",
+            "gross_capital_formation"
+          ]
+        },
+        "metrics": {
+          "domestic_value_added": 1294271.7,
+          "gross_capital_formation": 532330.2,
+          "domestic_final_consumption": 734594.8
+        },
+        "indicators": {
+          "investment_intensity": 0.411297,
+          "consumption_intensity": 0.567574
+        },
+        "health": {
+          "investment_intensity": 0.411297,
+          "oxygen_delivery_score": 0.567574,
+          "red_blood_cell_state": [
+            "future_oxygen_generation"
+          ],
+          "plain_english": "Production is not a wallet. It is the engine turning labor, capital, and demand into income."
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "firms_to_households_wages",
+        "source": "firms",
+        "target": "households",
+        "label": "Wages from firms",
+        "label_cn": "企业支付工资",
+        "accounting_term": "Compensation of employees",
+        "accounting_term_cn": "劳动者报酬",
+        "category": "labor_income",
+        "flow_nature": "labor_income",
+        "evidence_level": "direct_official_flow",
+        "value": 365599.1,
+        "display_value": 365599.1,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "income_creation",
+          "particle_style": "neutral",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "non_financial_enterprises",
+            "sector_label_cn": "非金融企业部门",
+            "sector_label_en": "Non-financial Enterprises",
+            "side": "uses",
+            "summary_key": "compensation_of_employees",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms pay labor income to households. This is a main pipe from production to household purchasing power.",
+          "jargon": "Recorded as compensation of employees paid by nonfinancial enterprises.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.282475,
+          "of_source_node_primary_metric": 0.457933,
+          "of_target_node_primary_metric": 0.416648,
+          "of_category_total": 0.740293,
+          "of_all_measured_edges": 0.132057
+        }
+      },
+      {
+        "id": "financial_to_households_wages",
+        "source": "financial_institutions",
+        "target": "households",
+        "label": "Finance-sector wages",
+        "label_cn": "金融部门工资",
+        "accounting_term": "Compensation of employees",
+        "accounting_term_cn": "劳动者报酬",
+        "category": "labor_income",
+        "flow_nature": "labor_income",
+        "evidence_level": "direct_official_flow",
+        "value": 23690.6,
+        "display_value": 23690.6,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "income_creation",
+          "particle_style": "neutral",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "financial_institutions",
+            "sector_label_cn": "金融机构部门",
+            "sector_label_en": "Financial Institutions",
+            "side": "uses",
+            "summary_key": "compensation_of_employees",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Financial institutions also pay workers, adding to household income.",
+          "jargon": "Recorded as compensation of employees paid by financial institutions.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.018304,
+          "of_source_node_primary_metric": 0.048927,
+          "of_target_node_primary_metric": 0.026999,
+          "of_category_total": 0.047971,
+          "of_all_measured_edges": 0.008557
+        }
+      },
+      {
+        "id": "government_to_households_wages",
+        "source": "government",
+        "target": "households",
+        "label": "Public-sector wages",
+        "label_cn": "公共部门工资",
+        "accounting_term": "Compensation of employees",
+        "accounting_term_cn": "劳动者报酬",
+        "category": "labor_income",
+        "flow_nature": "labor_income",
+        "evidence_level": "direct_official_flow",
+        "value": 104567.4,
+        "display_value": 104567.4,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "income_creation",
+          "particle_style": "neutral",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "summary_key": "compensation_of_employees",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government pays wages to public-sector workers, moving public funds into household income.",
+          "jargon": "Recorded as compensation of employees paid by general government.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.080792,
+          "of_source_node_primary_metric": 0.495248,
+          "of_target_node_primary_metric": 0.119168,
+          "of_category_total": 0.211736,
+          "of_all_measured_edges": 0.03777
+        }
+      },
+      {
+        "id": "households_to_firms_consumption",
+        "source": "households",
+        "target": "firms",
+        "label": "Household consumption",
+        "label_cn": "居民消费支出",
+        "accounting_term": "Actual final consumption",
+        "accounting_term_cn": "实际最终消费",
+        "category": "goods_and_services",
+        "flow_nature": "goods_and_services",
+        "evidence_level": "direct_official_flow_simplified_counterparty",
+        "value": 602708.2,
+        "display_value": 602708.2,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "oxygen_delivery",
+          "particle_style": "healthy",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "households",
+            "sector_label_cn": "住户部门",
+            "sector_label_en": "Households",
+            "side": "uses",
+            "item_label_contains": "实际最终消费",
+            "item_label_cn": "十一、实际最终消费",
+            "item_label_en": "",
+            "path_cn": "十一、实际最终消费",
+            "path_en": "",
+            "row_index": 28
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Households use income to buy goods and services. This is the main oxygen-delivery path for domestic demand.",
+          "jargon": "The official value is household actual final consumption. It is drawn as Households → Firms for teaching clarity.",
+          "caveat": "The table records a household use, not a literal counterparty matrix."
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.465674,
+          "of_source_node_primary_metric": 0.686864,
+          "of_target_node_primary_metric": 0.754925,
+          "of_category_total": 0.820463,
+          "of_all_measured_edges": 0.217702
+        }
+      },
+      {
+        "id": "government_to_firms_public_consumption",
+        "source": "government",
+        "target": "firms",
+        "label": "Public consumption / procurement",
+        "label_cn": "政府消费 / 采购",
+        "accounting_term": "Government actual final consumption",
+        "accounting_term_cn": "政府实际最终消费",
+        "category": "goods_and_services",
+        "flow_nature": "goods_and_services",
+        "evidence_level": "direct_official_flow_simplified_counterparty",
+        "value": 131886.6,
+        "display_value": 131886.6,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "public_oxygen_delivery",
+          "particle_style": "healthy",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "item_label_contains": "实际最终消费",
+            "item_label_cn": "十一、实际最终消费",
+            "item_label_en": "",
+            "path_cn": "十一、实际最终消费",
+            "path_en": "",
+            "row_index": 28
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government spending on final consumption supports demand for goods and services.",
+          "jargon": "Recorded as government actual final consumption.",
+          "caveat": "Drawn as Government → Firms for teaching clarity."
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.1019,
+          "of_source_node_primary_metric": 0.624636,
+          "of_target_node_primary_metric": 0.165195,
+          "of_category_total": 0.179537,
+          "of_all_measured_edges": 0.047638
+        }
+      },
+      {
+        "id": "rest_world_to_firms_net_exports",
+        "source": "rest_of_world",
+        "target": "firms",
+        "label": "Foreign demand / net exports",
+        "label_cn": "外需 / 净出口",
+        "accounting_term": "Net exports",
+        "accounting_term_cn": "净出口",
+        "category": "external",
+        "flow_nature": "external",
+        "evidence_level": "direct_official_flow_sign_normalized",
+        "value": -27176.5,
+        "display_value": 27176.5,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "external_oxygen",
+          "particle_style": "healthy",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "rest_of_the_world",
+            "sector_label_cn": "国外",
+            "sector_label_en": "Rest of the World",
+            "side": "sources",
+            "item_label_contains": "净出口",
+            "item_label_cn": "一、净出口",
+            "item_label_en": "",
+            "path_cn": "一、净出口",
+            "path_en": "",
+            "row_index": 9,
+            "display_transform": "abs"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "External demand enters the domestic circulation through net exports. Goods flow outward; payment/demand flows inward.",
+          "jargon": "Net exports are exports minus imports. The graph uses absolute value and money-flow direction for teaching.",
+          "caveat": "This is net exports, not gross exports; it is not a full export-dependence measure."
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.020998,
+          "of_source_node_primary_metric": 1.0,
+          "of_target_node_primary_metric": 0.03404,
+          "of_category_total": 1.0,
+          "of_all_measured_edges": 0.009816
+        }
+      },
+      {
+        "id": "households_to_government_current_transfers",
+        "source": "households",
+        "target": "government",
+        "label": "Taxes & social contributions",
+        "label_cn": "税收与社保缴款",
+        "accounting_term": "Current transfers paid by households",
+        "accounting_term_cn": "住户经常转移支出",
+        "category": "fiscal",
+        "flow_nature": "fiscal",
+        "evidence_level": "direct_official_flow_grouped",
+        "value": 118602.1,
+        "display_value": 118602.1,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "redistribution_valve_inflow",
+          "particle_style": "valve",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "households",
+            "sector_label_cn": "住户部门",
+            "sector_label_en": "Households",
+            "side": "uses",
+            "item_label_contains": "经常转移",
+            "item_label_cn": "七、经常转移",
+            "item_label_en": "",
+            "path_cn": "七、经常转移",
+            "path_en": "",
+            "row_index": 19
+          }
+        ],
+        "breakdown": [
+          {
+            "label": "所得税、财产税等经常税",
+            "label_cn": "（一）所得税、财产税等经常税",
+            "value": 15250.6,
+            "path_cn": "七、经常转移 / （一）所得税、财产税等经常税"
+          },
+          {
+            "label": "社会保险缴款",
+            "label_cn": "（二）社会保险缴款",
+            "value": 88748.8,
+            "path_cn": "七、经常转移 / （二）社会保险缴款"
+          },
+          {
+            "label": "社会补助",
+            "label_cn": "（四）社会补助",
+            "value": 759.7,
+            "path_cn": "七、经常转移 / （四）社会补助"
+          },
+          {
+            "label": "其他",
+            "label_cn": "（五）其他",
+            "value": 13843.0,
+            "path_cn": "七、经常转移 / （五）其他"
+          }
+        ],
+        "explain": {
+          "plain_english": "Households send money into the fiscal/social system through taxes, social contributions, and other current transfers.",
+          "jargon": "Grouped current transfers paid by households, including income/property taxes and social insurance contributions.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.091636,
+          "of_source_node_primary_metric": 0.135162,
+          "of_target_node_primary_metric": 0.561719,
+          "of_category_total": 0.303398,
+          "of_all_measured_edges": 0.04284
+        }
+      },
+      {
+        "id": "firms_to_government_production_taxes",
+        "source": "firms",
+        "target": "government",
+        "label": "Production taxes",
+        "label_cn": "生产税净额",
+        "accounting_term": "Net taxes on production",
+        "accounting_term_cn": "生产税净额",
+        "category": "fiscal",
+        "flow_nature": "fiscal",
+        "evidence_level": "direct_official_flow",
+        "value": 92745.4,
+        "display_value": 92745.4,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "redistribution_valve_inflow",
+          "particle_style": "valve",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "non_financial_enterprises",
+            "sector_label_cn": "非金融企业部门",
+            "sector_label_en": "Non-financial Enterprises",
+            "side": "uses",
+            "item_label_contains": "生产税净额",
+            "item_label_cn": "四、生产税净额",
+            "item_label_en": "",
+            "path_cn": "四、生产税净额",
+            "path_en": "",
+            "row_index": 12
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms pay net production taxes to government as part of the production process.",
+          "jargon": "Recorded as net taxes on production paid by nonfinancial enterprises.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.071658,
+          "of_source_node_primary_metric": 0.116169,
+          "of_target_node_primary_metric": 0.439257,
+          "of_category_total": 0.237253,
+          "of_all_measured_edges": 0.0335
+        }
+      },
+      {
+        "id": "government_to_households_current_transfers",
+        "source": "government",
+        "target": "households",
+        "label": "Social benefits & transfers",
+        "label_cn": "社会福利与转移",
+        "accounting_term": "Current transfers paid by government",
+        "accounting_term_cn": "政府经常转移支出",
+        "category": "fiscal",
+        "flow_nature": "fiscal",
+        "evidence_level": "direct_official_flow_simplified_counterparty",
+        "value": 88977.9,
+        "display_value": 88977.9,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "redistribution_valve_outflow",
+          "particle_style": "valve",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "item_label_contains": "经常转移",
+            "item_label_cn": "七、经常转移",
+            "item_label_en": "",
+            "path_cn": "七、经常转移",
+            "path_en": "",
+            "row_index": 19
+          }
+        ],
+        "breakdown": [
+          {
+            "label": "社会保险福利",
+            "label_cn": "（三）社会保险福利",
+            "value": 70896.5,
+            "path_cn": "七、经常转移 / （三）社会保险福利"
+          },
+          {
+            "label": "社会补助",
+            "label_cn": "（四）社会补助",
+            "value": 17803.9,
+            "path_cn": "七、经常转移 / （四）社会补助"
+          },
+          {
+            "label": "其他",
+            "label_cn": "（五）其他",
+            "value": 277.6,
+            "path_cn": "七、经常转移 / （五）其他"
+          }
+        ],
+        "explain": {
+          "plain_english": "Government moves money back toward households through social benefits and transfers.",
+          "jargon": "Recorded as current transfers paid by general government. Drawn toward households for teaching clarity.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.068747,
+          "of_source_node_primary_metric": 0.421414,
+          "of_target_node_primary_metric": 0.101402,
+          "of_category_total": 0.227616,
+          "of_all_measured_edges": 0.032139
+        }
+      },
+      {
+        "id": "government_to_households_social_transfers_in_kind",
+        "source": "government",
+        "target": "households",
+        "label": "Services in kind",
+        "label_cn": "实物社会转移",
+        "accounting_term": "Social transfers in kind",
+        "accounting_term_cn": "实物社会转移",
+        "category": "fiscal",
+        "flow_nature": "fiscal",
+        "evidence_level": "direct_official_flow_non_cash_service",
+        "value": 90587.6,
+        "display_value": 90587.6,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "public_service_delivery",
+          "particle_style": "service",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "item_label_contains": "实物社会转移",
+            "item_label_cn": "九、实物社会转移",
+            "item_label_en": "",
+            "path_cn": "九、实物社会转移",
+            "path_en": "",
+            "row_index": 26
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government provides services to households, such as public services consumed by households even if not paid as cash.",
+          "jargon": "Social transfers in kind are not ordinary cash payments; render separately or with a distinct style.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.069991,
+          "of_source_node_primary_metric": 0.429037,
+          "of_target_node_primary_metric": 0.103236,
+          "of_category_total": 0.231733,
+          "of_all_measured_edges": 0.032721
+        }
+      },
+      {
+        "id": "households_to_financial_deposits",
+        "source": "households",
+        "target": "financial_institutions",
+        "label": "Deposits",
+        "label_cn": "存款",
+        "accounting_term": "Net acquisition of deposits",
+        "accounting_term_cn": "存款资产增加",
+        "category": "saving_and_deposits",
+        "flow_nature": "saving_and_deposits",
+        "evidence_level": "direct_official_flow",
+        "value": 174137.0,
+        "display_value": 174137.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "clotting",
+          "particle_style": "slow",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "households",
+            "sector_label_cn": "住户",
+            "sector_label_en": "Households",
+            "summary_key": "deposits",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Households place a large share of new financial assets into deposits. This is the main clotting cue.",
+          "jargon": "In the financial account, household deposits are net acquisition of deposit assets.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.134544,
+          "of_source_node_primary_metric": 0.198452,
+          "of_target_node_primary_metric": 0.359637,
+          "of_category_total": 0.632945,
+          "of_all_measured_edges": 0.062899
+        }
+      },
+      {
+        "id": "households_to_financial_insurance",
+        "source": "households",
+        "target": "financial_institutions",
+        "label": "Insurance reserves",
+        "label_cn": "保险准备金",
+        "accounting_term": "Insurance technical reserves",
+        "accounting_term_cn": "保险准备金",
+        "category": "saving_and_deposits",
+        "flow_nature": "saving_and_deposits",
+        "evidence_level": "direct_official_flow",
+        "value": 36846.0,
+        "display_value": 36846.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "slow_saving_pool",
+          "particle_style": "slow",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "households",
+            "sector_label_cn": "住户",
+            "sector_label_en": "Households",
+            "summary_key": "insurance_reserves",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Some household saving enters insurance-reserve-like financial claims.",
+          "jargon": "Recorded as household net acquisition of insurance technical reserves.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.028469,
+          "of_source_node_primary_metric": 0.041991,
+          "of_target_node_primary_metric": 0.076096,
+          "of_category_total": 0.133926,
+          "of_all_measured_edges": 0.013309
+        }
+      },
+      {
+        "id": "firms_to_financial_deposits",
+        "source": "firms",
+        "target": "financial_institutions",
+        "label": "Enterprise deposits",
+        "label_cn": "企业存款",
+        "accounting_term": "Net acquisition of deposits",
+        "accounting_term_cn": "存款资产增加",
+        "category": "saving_and_deposits",
+        "flow_nature": "saving_and_deposits",
+        "evidence_level": "direct_official_flow",
+        "value": 38039.0,
+        "display_value": 38039.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "storage_pool",
+          "particle_style": "slow",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "non_financial_corporations",
+            "sector_label_cn": "非金融企业",
+            "sector_label_en": "Non-financial Corporations",
+            "summary_key": "deposits",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms also increase deposits, storing some money in the financial system.",
+          "jargon": "Recorded as nonfinancial corporations' net acquisition of deposits.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.02939,
+          "of_source_node_primary_metric": 0.047646,
+          "of_target_node_primary_metric": 0.07856,
+          "of_category_total": 0.138262,
+          "of_all_measured_edges": 0.01374
+        }
+      },
+      {
+        "id": "government_to_financial_deposits",
+        "source": "government",
+        "target": "financial_institutions",
+        "label": "Government deposits",
+        "label_cn": "政府存款",
+        "accounting_term": "Net acquisition of deposits",
+        "accounting_term_cn": "存款资产增加",
+        "category": "saving_and_deposits",
+        "flow_nature": "saving_and_deposits",
+        "evidence_level": "direct_official_flow",
+        "value": 26100.0,
+        "display_value": 26100.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "storage_pool",
+          "particle_style": "slow",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "general_government",
+            "sector_label_cn": "广义政府",
+            "sector_label_en": "General Government",
+            "summary_key": "deposits",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government also holds/increases deposits, but in this flow view it is still a net borrower overall.",
+          "jargon": "Recorded as general government net acquisition of deposits.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.020166,
+          "of_source_node_primary_metric": 0.123614,
+          "of_target_node_primary_metric": 0.053903,
+          "of_category_total": 0.094867,
+          "of_all_measured_edges": 0.009427
+        }
+      },
+      {
+        "id": "financial_to_households_loans",
+        "source": "financial_institutions",
+        "target": "households",
+        "label": "Household loans",
+        "label_cn": "住户贷款",
+        "accounting_term": "Net incurrence of loan liabilities",
+        "accounting_term_cn": "贷款负债增加",
+        "category": "credit",
+        "flow_nature": "credit",
+        "evidence_level": "direct_official_flow_simplified_lender",
+        "value": 46792.0,
+        "display_value": 46792.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "credit_recirculation",
+          "particle_style": "pumped",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "households",
+            "sector_label_cn": "住户",
+            "sector_label_en": "Households",
+            "summary_key": "loans",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Households borrow, receiving credit but also taking on liabilities.",
+          "jargon": "Recorded as household net incurrence of loan liabilities. Drawn from the financial system for teaching clarity.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.036153,
+          "of_source_node_primary_metric": 0.096637,
+          "of_target_node_primary_metric": 0.053326,
+          "of_category_total": 0.214075,
+          "of_all_measured_edges": 0.016902
+        }
+      },
+      {
+        "id": "financial_to_firms_loans",
+        "source": "financial_institutions",
+        "target": "firms",
+        "label": "Firm loans",
+        "label_cn": "企业贷款",
+        "accounting_term": "Net incurrence of loan liabilities",
+        "accounting_term_cn": "贷款负债增加",
+        "category": "credit",
+        "flow_nature": "credit",
+        "evidence_level": "direct_official_flow_simplified_lender",
+        "value": 168041.0,
+        "display_value": 168041.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "credit_recirculation",
+          "particle_style": "pumped",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "non_financial_corporations",
+            "sector_label_cn": "非金融企业",
+            "sector_label_en": "Non-financial Corporations",
+            "summary_key": "loans",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms rely heavily on loans to finance activity and investment.",
+          "jargon": "Recorded as nonfinancial corporations' net incurrence of loan liabilities.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.129834,
+          "of_source_node_primary_metric": 0.347047,
+          "of_target_node_primary_metric": 0.210481,
+          "of_category_total": 0.768792,
+          "of_all_measured_edges": 0.060697
+        }
+      },
+      {
+        "id": "financial_to_government_loans",
+        "source": "financial_institutions",
+        "target": "government",
+        "label": "Government loans",
+        "label_cn": "政府贷款",
+        "accounting_term": "Net incurrence of loan liabilities",
+        "accounting_term_cn": "贷款负债增加",
+        "category": "credit",
+        "flow_nature": "credit",
+        "evidence_level": "direct_official_flow_simplified_lender",
+        "value": 3745.0,
+        "display_value": 3745.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "credit_recirculation",
+          "particle_style": "pumped",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "general_government",
+            "sector_label_cn": "广义政府",
+            "sector_label_en": "General Government",
+            "summary_key": "loans",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government loan borrowing exists but is much smaller than bond financing in this dataset.",
+          "jargon": "Recorded as general government net incurrence of loan liabilities.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.002894,
+          "of_source_node_primary_metric": 0.007734,
+          "of_target_node_primary_metric": 0.017737,
+          "of_category_total": 0.017133,
+          "of_all_measured_edges": 0.001353
+        }
+      },
+      {
+        "id": "financial_to_government_bonds",
+        "source": "financial_institutions",
+        "target": "government",
+        "label": "Government bonds",
+        "label_cn": "政府债券融资",
+        "accounting_term": "Debt securities liabilities",
+        "accounting_term_cn": "债券负债增加",
+        "category": "securities",
+        "flow_nature": "securities",
+        "evidence_level": "direct_official_flow_simplified_holder",
+        "value": 98178.0,
+        "display_value": 98178.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "debt_channel",
+          "particle_style": "warning",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "general_government",
+            "sector_label_cn": "广义政府",
+            "sector_label_en": "General Government",
+            "summary_key": "debt_securities",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government mainly borrows through bonds in this flow view.",
+          "jargon": "Recorded as general government net incurrence of debt securities liabilities. Drawn from financial institutions for teaching clarity.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.075856,
+          "of_source_node_primary_metric": 0.202762,
+          "of_target_node_primary_metric": 0.464987,
+          "of_category_total": 0.965008,
+          "of_all_measured_edges": 0.035462
+        }
+      },
+      {
+        "id": "financial_to_firms_bonds",
+        "source": "financial_institutions",
+        "target": "firms",
+        "label": "Corporate bonds",
+        "label_cn": "企业债券融资",
+        "accounting_term": "Debt securities liabilities",
+        "accounting_term_cn": "债券负债增加",
+        "category": "securities",
+        "flow_nature": "securities",
+        "evidence_level": "direct_official_flow_simplified_holder",
+        "value": 3560.0,
+        "display_value": 3560.0,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "debt_channel",
+          "particle_style": "warning",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "fin",
+            "sector_id": "non_financial_corporations",
+            "sector_label_cn": "非金融企业",
+            "sector_label_en": "Non-financial Corporations",
+            "summary_key": "debt_securities",
+            "summary_side": "sources"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms also borrow through bonds, though this flow is much smaller than loans in 2023.",
+          "jargon": "Recorded as nonfinancial corporations' net incurrence of debt securities liabilities.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.002751,
+          "of_source_node_primary_metric": 0.007352,
+          "of_target_node_primary_metric": 0.004459,
+          "of_category_total": 0.034992,
+          "of_all_measured_edges": 0.001286
+        }
+      },
+      {
+        "id": "firms_to_production_investment",
+        "source": "firms",
+        "target": "production_engine",
+        "label": "Business investment",
+        "label_cn": "企业资本形成",
+        "accounting_term": "Gross capital formation",
+        "accounting_term_cn": "资本形成总额",
+        "category": "investment",
+        "flow_nature": "investment",
+        "evidence_level": "direct_official_flow_simplified_process",
+        "value": 326953.6,
+        "display_value": 326953.6,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "future_oxygen_generation",
+          "particle_style": "future",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "non_financial_enterprises",
+            "sector_label_cn": "非金融企业部门",
+            "sector_label_en": "Non-financial Enterprises",
+            "side": "uses",
+            "summary_key": "gross_capital_formation",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Firms invest in capital formation. This can support future production, but it is not the same as immediate household consumption.",
+          "jargon": "Recorded as nonfinancial enterprise gross capital formation.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.252616,
+          "of_source_node_primary_metric": 0.409527,
+          "of_target_node_primary_metric": 0.252616,
+          "of_category_total": 0.620967,
+          "of_all_measured_edges": 0.118098
+        }
+      },
+      {
+        "id": "government_to_production_public_investment",
+        "source": "government",
+        "target": "production_engine",
+        "label": "Public investment",
+        "label_cn": "公共资本形成",
+        "accounting_term": "Gross capital formation",
+        "accounting_term_cn": "资本形成总额",
+        "category": "investment",
+        "flow_nature": "investment",
+        "evidence_level": "direct_official_flow_simplified_process",
+        "value": 89983.4,
+        "display_value": 89983.4,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "future_oxygen_generation",
+          "particle_style": "future",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "genaral_governments",
+            "sector_label_cn": "广义政府部门",
+            "sector_label_en": "Genaral Governments",
+            "side": "uses",
+            "summary_key": "gross_capital_formation",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Government investment can support future production and public infrastructure.",
+          "jargon": "Recorded as general government gross capital formation.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.069524,
+          "of_source_node_primary_metric": 0.426176,
+          "of_target_node_primary_metric": 0.069524,
+          "of_category_total": 0.170901,
+          "of_all_measured_edges": 0.032503
+        }
+      },
+      {
+        "id": "households_to_production_capital_formation",
+        "source": "households",
+        "target": "production_engine",
+        "label": "Household capital formation",
+        "label_cn": "住户资本形成",
+        "accounting_term": "Gross capital formation",
+        "accounting_term_cn": "资本形成总额",
+        "category": "investment",
+        "flow_nature": "investment",
+        "evidence_level": "direct_official_flow_simplified_process",
+        "value": 109586.5,
+        "display_value": 109586.5,
+        "unit": "亿元",
+        "metaphor": {
+          "role": "housing_like_investment",
+          "particle_style": "future",
+          "diagnostic_weight": 1.0
+        },
+        "source_refs": [
+          {
+            "tree": "nf",
+            "sector_id": "households",
+            "sector_label_cn": "住户部门",
+            "sector_label_en": "Households",
+            "side": "uses",
+            "summary_key": "gross_capital_formation",
+            "summary_side": "uses"
+          }
+        ],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Households also have capital formation, often visually useful as a housing-like investment channel.",
+          "jargon": "Recorded as household gross capital formation.",
+          "caveat": null
+        },
+        "visual_hints": {
+          "default_visible": false,
+          "show_particles": true,
+          "stroke_style": "solid",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": 0.08467,
+          "of_source_node_primary_metric": 0.124888,
+          "of_target_node_primary_metric": 0.08467,
+          "of_category_total": 0.208132,
+          "of_all_measured_edges": 0.039583
+        }
+      },
+      {
+        "id": "production_to_households_future_income",
+        "source": "production_engine",
+        "target": "households",
+        "label": "Future income loop",
+        "label_cn": "未来收入循环",
+        "accounting_term": "Conceptual feedback",
+        "accounting_term_cn": "概念性反馈",
+        "category": "conceptual",
+        "flow_nature": "conceptual",
+        "evidence_level": "conceptual_only",
+        "value": null,
+        "display_value": 1.0,
+        "unit": null,
+        "metaphor": {
+          "role": "future_oxygen_generation",
+          "particle_style": "future",
+          "diagnostic_weight": 0.0
+        },
+        "source_refs": [],
+        "breakdown": [],
+        "explain": {
+          "plain_english": "Investment may support future production and income, but this table does not prove the quality or timing of that return.",
+          "jargon": "Conceptual feedback edge, not an official measured flow.",
+          "caveat": "Render dashed and do not scale alongside official flows."
+        },
+        "visual_hints": {
+          "default_visible": true,
+          "show_particles": false,
+          "stroke_style": "dashed",
+          "width_metric": "display_value",
+          "particle_rate_metric": "display_value"
+        },
+        "percentages": {
+          "of_domestic_value_added": null,
+          "of_source_node_primary_metric": null,
+          "of_target_node_primary_metric": null,
+          "of_category_total": null,
+          "of_all_measured_edges": null
+        }
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "domestic_demand_loop",
+      "title": "1. Domestic demand loop",
+      "description": "Firms pay income to households; households return demand through consumption.",
+      "active_nodes": [
+        "households",
+        "firms"
+      ],
+      "active_edges": [
+        "firms_to_households_wages",
+        "households_to_firms_consumption"
+      ]
+    },
+    {
+      "id": "savings_and_clotting",
+      "title": "2. Savings and clotting",
+      "description": "A large household flow enters deposits and insurance reserves rather than immediately returning as consumption.",
+      "active_nodes": [
+        "households",
+        "financial_institutions"
+      ],
+      "active_edges": [
+        "households_to_financial_deposits",
+        "households_to_financial_insurance"
+      ]
+    },
+    {
+      "id": "credit_recirculation",
+      "title": "3. Credit recirculation",
+      "description": "The financial system channels funds into loans and bonds for firms, households, and government.",
+      "active_nodes": [
+        "financial_institutions",
+        "firms",
+        "government",
+        "households"
+      ],
+      "active_edges": [
+        "financial_to_firms_loans",
+        "financial_to_households_loans",
+        "financial_to_government_bonds"
+      ]
+    },
+    {
+      "id": "fiscal_valve",
+      "title": "4. Government as fiscal valve",
+      "description": "Taxes and contributions enter government; transfers and public spending flow back out.",
+      "active_nodes": [
+        "government",
+        "households",
+        "firms"
+      ],
+      "active_edges": [
+        "households_to_government_current_transfers",
+        "firms_to_government_production_taxes",
+        "government_to_households_current_transfers",
+        "government_to_firms_public_consumption"
+      ]
+    },
+    {
+      "id": "external_demand",
+      "title": "5. External demand",
+      "description": "The rest of the world supplies demand through net exports. Goods flow outward; payment/demand flows inward.",
+      "active_nodes": [
+        "rest_of_world",
+        "firms"
+      ],
+      "active_edges": [
+        "rest_world_to_firms_net_exports"
+      ]
+    },
+    {
+      "id": "investment_loop",
+      "title": "6. Investment and future income",
+      "description": "Investment is not a dead end. It may create future production and income, but its return quality is not proven by this flow table.",
+      "active_nodes": [
+        "firms",
+        "government",
+        "households",
+        "production_engine"
+      ],
+      "active_edges": [
+        "firms_to_production_investment",
+        "government_to_production_public_investment",
+        "households_to_production_capital_formation",
+        "production_to_households_future_income"
+      ]
+    },
+    {
+      "id": "red_blood_cell_diagnosis",
+      "title": "7. Red blood cell diagnosis",
+      "description": "Healthy oxygen delivery, clotting, recirculation, debt dependence, and external oxygen are highlighted together.",
+      "active_nodes": [
+        "households",
+        "firms",
+        "financial_institutions",
+        "government",
+        "rest_of_world",
+        "production_engine"
+      ],
+      "active_edges": "all_measured_default_visible"
+    }
+  ],
+  "glossary": {
+    "compensation_of_employees": {
+      "label": "Compensation of employees",
+      "label_cn": "劳动者报酬",
+      "plain_english": "Wages and labor income paid to workers.",
+      "why_it_matters": "One of the main ways production becomes household income."
+    },
+    "actual_final_consumption": {
+      "label": "Actual final consumption",
+      "label_cn": "实际最终消费",
+      "plain_english": "Goods and services actually consumed by households or government.",
+      "why_it_matters": "The main oxygen-delivery path in the red-blood-cell metaphor."
+    },
+    "gross_saving": {
+      "label": "Gross saving",
+      "label_cn": "总储蓄",
+      "plain_english": "Income not used for current consumption after relevant accounting adjustments.",
+      "why_it_matters": "High saving can fund investment, but can also signal weak consumption circulation."
+    },
+    "deposits": {
+      "label": "Deposits",
+      "label_cn": "存款",
+      "plain_english": "Money placed in bank-like accounts.",
+      "why_it_matters": "Deposits are safe storage; large deposit accumulation can represent clotting."
+    },
+    "loans": {
+      "label": "Loans",
+      "label_cn": "贷款",
+      "plain_english": "Borrowed funds: liabilities for borrowers and assets for lenders.",
+      "why_it_matters": "Loans recirculate saved money into households, firms, and government."
+    },
+    "debt_securities": {
+      "label": "Debt securities / bonds",
+      "label_cn": "债券",
+      "plain_english": "Borrowing through bond issuance rather than direct loans.",
+      "why_it_matters": "In this graph, government financing is heavily bond-based."
+    },
+    "net_exports": {
+      "label": "Net exports",
+      "label_cn": "净出口",
+      "plain_english": "Exports minus imports. In the money-flow view, positive net export demand is drawn as payment from the rest of the world into domestic producers.",
+      "why_it_matters": "It shows the external-demand pipe in the circulation model."
+    },
+    "net_financial_investment": {
+      "label": "Net financial investment",
+      "label_cn": "净金融投资",
+      "plain_english": "Positive means net lending/surplus; negative means net borrowing/financing need.",
+      "why_it_matters": "A compact way to show which sectors supply funds and which need financing."
+    }
+  },
+  "validation": {
+    "source_tree_validation_note": "Run validate_fof_trees.py separately; expected current result is hard failures = 0, with bridge discrepancies as warnings.",
+    "all_sources_and_targets_exist": true,
+    "all_measured_edges_have_display_values": true,
+    "conceptual_edges_marked": true,
+    "negative_display_values_handled": true,
+    "missing_endpoints": [],
+    "missing_values": [],
+    "conceptual_not_marked": [],
+    "negative_measured_display_values": [],
+    "node_count": 6,
+    "edge_count": 23,
+    "default_visible_edge_count": 16
+  },
+  "evidence_levels": {
+    "direct_official_flow": "Directly read from one official table item.",
+    "direct_official_flow_grouped": "Directly read from an official parent item; child breakdown included when available.",
+    "direct_official_flow_simplified_counterparty": "Official value, but displayed as actor-to-actor edge for teaching clarity.",
+    "direct_official_flow_simplified_lender": "Official borrower-side liability flow; lender is simplified as financial institutions.",
+    "direct_official_flow_simplified_holder": "Official liability/security flow; holder is simplified as financial institutions.",
+    "direct_official_flow_simplified_process": "Official flow displayed as actor-to-process edge for teaching clarity.",
+    "direct_official_flow_sign_normalized": "Official flow whose sign/direction is normalized for money-flow visualization.",
+    "direct_official_flow_non_cash_service": "Official flow that may represent services in kind rather than ordinary cash payments.",
+    "conceptual_only": "Used for explanation; not a measured official flow."
+  }
+}
