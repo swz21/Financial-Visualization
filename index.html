@@ -274,6 +274,13 @@
             width: 1452px;
             height: 872px;
             overflow: visible;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+        }
+
+        #flowGraph.is-zooming {
+            cursor: grabbing;
         }
 
         .zone-label {
@@ -345,7 +352,11 @@
         }
 
         .node-group {
-            cursor: pointer;
+            cursor: grab;
+        }
+
+        .node-group.is-dragging {
+            cursor: grabbing;
         }
 
         .node-core {
@@ -515,6 +526,7 @@
         }
 
         .toggle-button,
+        .tool-button,
         .category-button {
             flex: 0 0 auto;
             height: 38px;
@@ -532,6 +544,7 @@
         }
 
         .toggle-button.is-active,
+        .tool-button:hover,
         .category-button.is-active {
             color: #fff8ea;
             background: rgba(24, 32, 29, 0.86);
@@ -626,6 +639,7 @@
                 <div class="toolbar reveal" id="toolbar">
                     <button class="toggle-button is-active" data-mode="default" type="button">默认边</button>
                     <button class="toggle-button" data-mode="all" type="button">全部边</button>
+                    <button class="tool-button" id="resetView" type="button">重置视图</button>
                     <span class="legend-note">宽度 = 流量；虚线 = 概念边</span>
                 </div>
 
@@ -766,6 +780,10 @@
             return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${controls[0].x.toFixed(1)} ${controls[0].y.toFixed(1)}, ${controls[1].x.toFixed(1)} ${controls[1].y.toFixed(1)}, ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
         }
 
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
+        }
+
         function shouldShow(edge) {
             const defaultVisible = edge.visual_hints && edge.visual_hints.default_visible === true;
             const modeVisible = activeMode === "all" || defaultVisible;
@@ -860,6 +878,71 @@
         }
 
         /* ===========================================
+           GRAPH INTERACTION HELPERS
+           =========================================== */
+        function setupZoom(svg, viewport) {
+            const zoomBehavior = d3.zoom()
+                .scaleExtent([0.65, 2.8])
+                .extent([[0, 0], [WIDTH, HEIGHT]])
+                .translateExtent([[-260, -200], [WIDTH + 260, HEIGHT + 200]])
+                .filter(event => {
+                    const target = event.target;
+                    return !(target && target.closest && target.closest(".node-group"));
+                })
+                .on("start", () => svg.classed("is-zooming", true))
+                .on("zoom", event => viewport.attr("transform", event.transform))
+                .on("end", () => svg.classed("is-zooming", false));
+
+            svg.call(zoomBehavior).on("dblclick.zoom", null);
+            return zoomBehavior;
+        }
+
+        function updateEdgePaths() {
+            d3.selectAll(".edge-hit").attr("d", edgePath);
+            d3.selectAll(".edge-halo").attr("d", edgePath);
+            d3.selectAll(".edge-main").attr("d", edgePath);
+            d3.selectAll(".edge-motion").attr("d", edgePath);
+        }
+
+        function dragBehavior() {
+            return d3.drag()
+                .container(() => graphState.viewport.node())
+                .subject((event, node) => ({ x: node.x, y: node.y }))
+                .on("start", function(event, node) {
+                    event.sourceEvent.stopPropagation();
+                    d3.select(this).classed("is-dragging", true);
+                    highlightNode(node);
+                })
+                .on("drag", function(event, node) {
+                    node.x = clamp(event.x, node.r + 18, WIDTH - node.r - 18);
+                    node.y = clamp(event.y, node.r + 18, HEIGHT - node.r - 18);
+                    d3.select(this).attr("transform", `translate(${node.x},${node.y})`);
+                    updateEdgePaths();
+                })
+                .on("end", function(event, node) {
+                    d3.select(this).classed("is-dragging", false);
+                    highlightNode(node);
+                });
+        }
+
+        function resetGraphView() {
+            if (!graphState) return;
+            graphState.nodes.forEach(node => {
+                node.x = node.homeX;
+                node.y = node.homeY;
+            });
+            d3.selectAll(".node-group")
+                .transition()
+                .duration(360)
+                .attr("transform", node => `translate(${node.x},${node.y})`);
+            updateEdgePaths();
+            graphState.svg
+                .transition()
+                .duration(360)
+                .call(graphState.zoomBehavior.transform, d3.zoomIdentity);
+        }
+
+        /* ===========================================
            GRAPH RENDERING
            =========================================== */
         function renderGraph(raw) {
@@ -867,7 +950,10 @@
             const svg = d3.select("#flowGraph");
             svg.selectAll("*").remove();
 
-            const nodes = raw.graph.nodes.map(node => ({ ...node, ...pointFromLayout(node.layout) }));
+            const nodes = raw.graph.nodes.map(node => {
+                const point = pointFromLayout(node.layout);
+                return { ...node, ...point, homeX: point.x, homeY: point.y };
+            });
             const nodeById = new Map(nodes.map(node => [node.id, node]));
             const nodeSize = d3.scaleSqrt()
                 .domain(d3.extent(nodes, metricValue))
@@ -890,7 +976,9 @@
                 color: (categoryMeta[edge.category] || categoryMeta.conceptual).color
             }));
 
-            graphState = { raw, nodes, edges };
+            const viewport = svg.append("g").attr("class", "graph-viewport");
+            const zoomBehavior = setupZoom(svg, viewport);
+            graphState = { raw, nodes, edges, svg, viewport, zoomBehavior };
 
             const defs = svg.append("defs");
             edges.forEach(edge => {
@@ -909,9 +997,9 @@
                     .attr("opacity", edge.category === "conceptual" ? 0.72 : 0.88);
             });
 
-            renderZones(svg);
-            renderEdges(svg, edges);
-            renderNodes(svg, nodes);
+            renderZones(viewport);
+            renderEdges(viewport, edges);
+            renderNodes(viewport, nodes);
             renderToolbar(edges);
             applyVisibility();
             setPanelForSummary(edges);
@@ -984,7 +1072,8 @@
                 .attr("class", "node-group")
                 .attr("transform", node => `translate(${node.x},${node.y})`)
                 .on("mouseenter", (event, node) => highlightNode(node))
-                .on("mouseleave", clearHighlight);
+                .on("mouseleave", clearHighlight)
+                .call(dragBehavior());
 
             groups.append("circle")
                 .attr("class", "node-ring")
@@ -1061,6 +1150,8 @@
                 applyVisibility();
                 setPanelForSummary(graphState.edges);
             });
+
+            d3.select("#resetView").on("click", resetGraphView);
         }
 
         function applyVisibility() {
