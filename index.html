@@ -46,15 +46,17 @@
             width: 100%;
             height: 100%;
             margin: 0;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             background: var(--stage-bg, #000);
         }
 
         /* 2. Full-window deck viewport */
         .deck-viewport {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
+            position: relative;
+            width: 100%;
+            min-height: 1080px;
+            overflow: visible;
             background: var(--stage-bg, #000);
         }
 
@@ -65,8 +67,8 @@
             left: 0;
             top: 0;
             width: 1920px;
-            height: 1080px;
-            overflow: hidden;
+            height: 1960px;
+            overflow: visible;
             transform-origin: 0 0;
             background: var(--slide-bg, #fff);
         }
@@ -77,8 +79,8 @@
             position: absolute;
             inset: 0;
             width: 1920px;
-            height: 1080px;
-            overflow: hidden;
+            height: 1960px;
+            overflow: visible;
             display: block;
             visibility: hidden;
             opacity: 0;
@@ -517,7 +519,7 @@
         .toolbar {
             position: absolute;
             left: 76px;
-            bottom: 42px;
+            top: 1038px;
             width: 1330px;
             z-index: 5;
             display: flex;
@@ -586,6 +588,156 @@
         }
 
         /* ===========================================
+           STATISTICS VIEW
+           =========================================== */
+        .view-panel {
+            transition: opacity 240ms ease, visibility 240ms ease;
+        }
+
+        .view-panel.is-hidden {
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .stats-view {
+            position: absolute;
+            left: 54px;
+            top: 1112px;
+            width: 1812px;
+            height: 784px;
+            z-index: 3;
+        }
+
+        .stats-header {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            height: 54px;
+            margin: 0 0 14px;
+        }
+
+        .stats-title {
+            margin: 0;
+            color: #18201d;
+            font-family: var(--font-display);
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: 0;
+        }
+
+        .stats-note {
+            width: 560px;
+            margin: 0;
+            color: rgba(24, 32, 29, 0.62);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: right;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: 335px 335px;
+            gap: 16px;
+        }
+
+        .chart-card {
+            position: relative;
+            overflow: hidden;
+            padding: 18px 18px 14px;
+            background: linear-gradient(180deg, rgba(255, 252, 244, 0.92), rgba(247, 244, 235, 0.78));
+            border: 1px solid rgba(24, 32, 29, 0.13);
+            border-radius: 8px;
+            box-shadow: 0 22px 54px rgba(76, 91, 82, 0.14);
+        }
+
+        .chart-card.wide {
+            grid-column: span 2;
+        }
+
+        .chart-title {
+            margin: 0;
+            color: #18201d;
+            font-size: 19px;
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        .chart-subtitle {
+            margin: 5px 0 0;
+            color: rgba(24, 32, 29, 0.56);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .chart-svg {
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: 10px;
+            width: calc(100% - 28px);
+            height: 250px;
+            overflow: visible;
+        }
+
+        .chart-card.wide .chart-svg {
+            height: 246px;
+        }
+
+        .chart-axis text,
+        .chart-label {
+            fill: rgba(24, 32, 29, 0.72);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .chart-axis path,
+        .chart-axis line {
+            stroke: rgba(24, 32, 29, 0.16);
+        }
+
+        .chart-grid-line {
+            stroke: rgba(24, 32, 29, 0.08);
+            stroke-width: 1;
+        }
+
+        .chart-value {
+            fill: #18201d;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .chart-muted {
+            fill: rgba(24, 32, 29, 0.48);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            z-index: 20;
+            min-width: 170px;
+            max-width: 260px;
+            padding: 10px 12px;
+            color: #fff8ea;
+            background: rgba(24, 32, 29, 0.92);
+            border-radius: 8px;
+            box-shadow: 0 12px 30px rgba(24, 32, 29, 0.2);
+            font-size: 13px;
+            line-height: 1.45;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 120ms ease, transform 120ms ease;
+        }
+
+        .chart-tooltip.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===========================================
            ANIMATIONS
            =========================================== */
         .reveal {
@@ -622,19 +774,66 @@
                     默认显示官方直接流与教学简化流；可切换全量边。
                 </div>
 
-                <div class="graph-wrap">
-                    <svg id="flowGraph" viewBox="0 0 1452 872" role="img" aria-label="2023 中国宏观货币流动节点边图"></svg>
+                <div class="view-panel" id="mainView">
+                    <div class="graph-wrap">
+                        <svg id="flowGraph" viewBox="0 0 1452 872" role="img" aria-label="2023 中国宏观货币流动节点边图"></svg>
+                    </div>
+
+                    <aside class="side-panel reveal" id="detailPanel">
+                        <p class="panel-kicker" id="panelKicker">当前视图</p>
+                        <h2 class="panel-title" id="panelTitle">默认可见流量</h2>
+                        <div class="panel-value" id="panelValue">16 条</div>
+                        <p class="panel-caption" id="panelCaption">悬停节点或边查看含义。初稿通过固定节点布局和手调曲线通道减少遮挡，后续可在此基础上继续做叙事场景。</p>
+                        <div class="panel-rule"></div>
+                        <p class="flow-list-title">当前显示的主要流量</p>
+                        <div class="flow-list" id="flowList"></div>
+                    </aside>
                 </div>
 
-                <aside class="side-panel reveal" id="detailPanel">
-                    <p class="panel-kicker" id="panelKicker">当前视图</p>
-                    <h2 class="panel-title" id="panelTitle">默认可见流量</h2>
-                    <div class="panel-value" id="panelValue">16 条</div>
-                    <p class="panel-caption" id="panelCaption">悬停节点或边查看含义。初稿通过固定节点布局和手调曲线通道减少遮挡，后续可在此基础上继续做叙事场景。</p>
-                    <div class="panel-rule"></div>
-                    <p class="flow-list-title">当前显示的主要流量</p>
-                    <div class="flow-list" id="flowList"></div>
-                </aside>
+                <section class="view-panel stats-view" id="statsView" aria-label="宏观货币流动统计图">
+                    <div class="stats-header">
+                        <h2 class="stats-title">宏观货币流动统计分析</h2>
+                        <p class="stats-note">从同一份 JSON 动态派生矩阵、分布、净流量和多指标对比；金额单位统一按亿元读取，界面按万亿元简写。</p>
+                    </div>
+                    <div class="stats-grid">
+                        <article class="chart-card">
+                            <h3 class="chart-title">流量邻接矩阵</h3>
+                            <p class="chart-subtitle">source x target，颜色越深表示流量越大</p>
+                            <svg class="chart-svg" id="adjacencyMatrix" viewBox="0 0 410 250"></svg>
+                        </article>
+                        <article class="chart-card">
+                            <h3 class="chart-title">部门净流入 / 净流出</h3>
+                            <p class="chart-subtitle">流入总额减流出总额，概念边不计入</p>
+                            <svg class="chart-svg" id="netFlowChart" viewBox="0 0 410 250"></svg>
+                        </article>
+                        <article class="chart-card wide">
+                            <h3 class="chart-title">边权 Pareto 分布</h3>
+                            <p class="chart-subtitle">少数大流量对整体循环的累计贡献</p>
+                            <svg class="chart-svg" id="paretoChart" viewBox="0 0 860 250"></svg>
+                        </article>
+                        <article class="chart-card">
+                            <h3 class="chart-title">类别-部门关联矩阵</h3>
+                            <p class="chart-subtitle">部门参与各类货币活动的规模</p>
+                            <svg class="chart-svg" id="categoryNodeMatrix" viewBox="0 0 410 250"></svg>
+                        </article>
+                        <article class="chart-card">
+                            <h3 class="chart-title">部门指标雷达图</h3>
+                            <p class="chart-subtitle">消费、储蓄、资本形成、金融使用、融资来源归一化</p>
+                            <svg class="chart-svg" id="radarChart" viewBox="0 0 410 250"></svg>
+                        </article>
+                        <article class="chart-card">
+                            <h3 class="chart-title">边类别总量</h3>
+                            <p class="chart-subtitle">按流量类别汇总 display_value</p>
+                            <svg class="chart-svg" id="categoryBarChart" viewBox="0 0 410 250"></svg>
+                        </article>
+                        <article class="chart-card">
+                            <h3 class="chart-title">Top 流量边</h3>
+                            <p class="chart-subtitle">展示规模最大的 8 条可度量流量</p>
+                            <svg class="chart-svg" id="topFlowChart" viewBox="0 0 410 250"></svg>
+                        </article>
+                    </div>
+                    <div class="chart-tooltip" id="chartTooltip"></div>
+                </section>
 
                 <div class="toolbar reveal" id="toolbar">
                     <button class="toggle-button is-active" data-mode="default" type="button">默认边</button>
@@ -656,16 +855,17 @@
         class FixedStage {
             constructor(stage) {
                 this.stage = stage;
+                this.viewport = document.querySelector(".deck-viewport");
                 this.scale = this.scale.bind(this);
                 this.scale();
                 window.addEventListener("resize", this.scale);
             }
 
             scale() {
-                const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+                const factor = Math.min(window.innerWidth / 1920, 1);
                 const x = (window.innerWidth - 1920 * factor) / 2;
-                const y = (window.innerHeight - 1080 * factor) / 2;
-                this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+                this.stage.style.transform = `translate(${x}px, 0) scale(${factor})`;
+                this.viewport.style.minHeight = `${1960 * factor}px`;
             }
         }
 
@@ -732,6 +932,14 @@
             process: "生产过程"
         };
 
+        const metricLabels = {
+            actual_final_consumption: "消费",
+            gross_saving: "储蓄",
+            gross_capital_formation: "资本形成",
+            financial_uses_total: "金融使用",
+            financial_sources_total: "融资来源"
+        };
+
         let activeMode = "default";
         let activeCategories = new Set(Object.keys(categoryMeta));
         let graphState = null;
@@ -788,6 +996,104 @@
             const defaultVisible = edge.visual_hints && edge.visual_hints.default_visible === true;
             const modeVisible = activeMode === "all" || defaultVisible;
             return modeVisible && activeCategories.has(edge.category);
+        }
+
+        function shortLabel(label) {
+            return (label || "")
+                .replace("非金融企业 / 生产者", "非金融企业")
+                .replace("金融机构 / 银行等", "金融机构")
+                .replace("Rest of World", "国外")
+                .replace("Production Engine", "生产");
+        }
+
+        function measuredEdges(edges) {
+            return edges.filter(edge => edge.category !== "conceptual" && Number.isFinite(edge.display_value));
+        }
+
+        function categoryName(category) {
+            return categoryMeta[category] ? categoryMeta[category].name : category;
+        }
+
+        function aggregateCategoryTotals(edges) {
+            return Array.from(
+                d3.rollup(measuredEdges(edges), values => d3.sum(values, edge => edge.display_value), edge => edge.category),
+                ([category, value]) => ({ category, name: categoryName(category), value })
+            ).sort((a, b) => b.value - a.value);
+        }
+
+        function computeNodeBalances(nodes, edges) {
+            const balanceById = new Map(nodes.map(node => [node.id, { node, inflow: 0, outflow: 0, net: 0 }]));
+            measuredEdges(edges).forEach(edge => {
+                const source = balanceById.get(edge.source);
+                const target = balanceById.get(edge.target);
+                if (source) source.outflow += edge.display_value;
+                if (target) target.inflow += edge.display_value;
+            });
+            balanceById.forEach(item => {
+                item.net = item.inflow - item.outflow;
+            });
+            return Array.from(balanceById.values()).sort((a, b) => d3.descending(Math.abs(a.net), Math.abs(b.net)));
+        }
+
+        function buildAdjacencyMatrix(nodes, edges) {
+            const idToIndex = new Map(nodes.map((node, index) => [node.id, index]));
+            const cells = [];
+            nodes.forEach((source, row) => {
+                nodes.forEach((target, col) => {
+                    cells.push({ row, col, source, target, value: 0 });
+                });
+            });
+            measuredEdges(edges).forEach(edge => {
+                const row = idToIndex.get(edge.source);
+                const col = idToIndex.get(edge.target);
+                if (row === undefined || col === undefined) return;
+                cells[row * nodes.length + col].value += edge.display_value;
+            });
+            return cells;
+        }
+
+        function buildCategoryNodeMatrix(nodes, edges) {
+            const categories = aggregateCategoryTotals(edges).map(item => item.category);
+            const cells = [];
+            categories.forEach((category, row) => {
+                nodes.forEach((node, col) => {
+                    const value = measuredEdges(edges)
+                        .filter(edge => edge.category === category && (edge.source === node.id || edge.target === node.id))
+                        .reduce((sum, edge) => sum + edge.display_value, 0);
+                    cells.push({ row, col, category, node, value });
+                });
+            });
+            return { categories, cells };
+        }
+
+        function computePareto(edges) {
+            const sorted = measuredEdges(edges).slice().sort((a, b) => b.display_value - a.display_value);
+            const total = d3.sum(sorted, edge => edge.display_value);
+            let cumulative = 0;
+            return sorted.map((edge, index) => {
+                cumulative += edge.display_value;
+                return { ...edge, rank: index + 1, cumulativeShare: total ? cumulative / total : 0 };
+            });
+        }
+
+        function computeRadarSeries(nodes) {
+            const selectedIds = ["households", "firms", "financial_institutions", "government"];
+            const metrics = ["actual_final_consumption", "gross_saving", "gross_capital_formation", "financial_uses_total", "financial_sources_total"];
+            const selected = selectedIds.map(id => nodes.find(node => node.id === id)).filter(Boolean);
+            const maxByMetric = new Map(metrics.map(metric => [
+                metric,
+                d3.max(selected, node => Math.max(0, node.metrics && node.metrics[metric] || 0)) || 1
+            ]));
+            return selected.map(node => ({
+                node,
+                color: node.color,
+                values: metrics.map(metric => ({
+                    metric,
+                    label: metricLabels[metric],
+                    raw: Math.max(0, node.metrics && node.metrics[metric] || 0),
+                    value: (Math.max(0, node.metrics && node.metrics[metric] || 0)) / maxByMetric.get(metric)
+                }))
+            }));
         }
 
         /* ===========================================
@@ -943,6 +1249,382 @@
         }
 
         /* ===========================================
+           STATISTICS RENDERING
+           =========================================== */
+        function showChartTooltip(event, html) {
+            const tooltip = d3.select("#chartTooltip");
+            const statsView = document.getElementById("statsView");
+            const [x, y] = d3.pointer(event, statsView);
+            tooltip
+                .html(html)
+                .style("left", `${Math.min(x + 16, 1530)}px`)
+                .style("top", `${Math.max(68, y + 10)}px`)
+                .classed("is-visible", true);
+        }
+
+        function hideChartTooltip() {
+            d3.select("#chartTooltip").classed("is-visible", false);
+        }
+
+        function drawAdjacencyMatrix(nodes, edges) {
+            const svg = d3.select("#adjacencyMatrix");
+            svg.selectAll("*").remove();
+            const size = 24;
+            const left = 100;
+            const top = 86;
+            const cells = buildAdjacencyMatrix(nodes, edges);
+            const maxValue = d3.max(cells, cell => cell.value) || 1;
+            const color = d3.scaleSequentialSqrt([0, maxValue], d3.interpolateYlOrRd);
+
+            svg.append("text")
+                .attr("class", "chart-muted")
+                .attr("x", left + nodes.length * size - 2)
+                .attr("y", 18)
+                .attr("text-anchor", "end")
+                .text("列：流入目标");
+            svg.append("text")
+                .attr("class", "chart-muted")
+                .attr("x", 8)
+                .attr("y", top - 8)
+                .text("行：流出来源");
+
+            svg.selectAll(".matrix-x")
+                .data(nodes)
+                .join("text")
+                .attr("class", "chart-label")
+                .attr("x", (node, index) => left + index * size + size / 2)
+                .attr("y", top - 24)
+                .attr("text-anchor", "start")
+                .attr("transform", (node, index) => `rotate(-35 ${left + index * size + size / 2} ${top - 24})`)
+                .text(node => shortLabel(node.label_cn));
+
+            svg.selectAll(".matrix-y")
+                .data(nodes)
+                .join("text")
+                .attr("class", "chart-label")
+                .attr("x", left - 10)
+                .attr("y", (node, index) => top + index * size + 18)
+                .attr("text-anchor", "end")
+                .text(node => shortLabel(node.label_cn));
+
+            svg.selectAll(".matrix-cell")
+                .data(cells)
+                .join("rect")
+                .attr("class", "matrix-cell")
+                .attr("x", cell => left + cell.col * size)
+                .attr("y", cell => top + cell.row * size)
+                .attr("width", size - 2)
+                .attr("height", size - 2)
+                .attr("rx", 4)
+                .attr("fill", cell => cell.value ? color(cell.value) : "rgba(24,32,29,0.04)")
+                .attr("stroke", "rgba(24,32,29,0.08)")
+                .on("mouseenter", (event, cell) => {
+                    showChartTooltip(event, `<strong>${cell.source.label_cn} -> ${cell.target.label_cn}</strong><br>${formatWanYi(cell.value)}`);
+                })
+                .on("mouseleave", hideChartTooltip);
+        }
+
+        function drawNetFlowChart(nodes, edges) {
+            const svg = d3.select("#netFlowChart");
+            svg.selectAll("*").remove();
+            const data = computeNodeBalances(nodes, edges);
+            const margin = { top: 24, right: 44, bottom: 24, left: 92 };
+            const width = 410 - margin.left - margin.right;
+            const height = 250 - margin.top - margin.bottom;
+            const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+            const maxAbs = d3.max(data, item => Math.abs(item.net)) || 1;
+            const x = d3.scaleLinear().domain([-maxAbs, maxAbs]).range([0, width]).nice();
+            const y = d3.scaleBand().domain(data.map(item => item.node.id)).range([0, height]).padding(0.26);
+
+            g.append("g")
+                .attr("class", "chart-axis")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(4).tickFormat(value => `${d3.format(".1f")(value / 10000)}`));
+            g.append("line")
+                .attr("x1", x(0))
+                .attr("x2", x(0))
+                .attr("y1", 0)
+                .attr("y2", height)
+                .attr("stroke", "rgba(24,32,29,0.28)")
+                .attr("stroke-width", 1.4);
+            g.selectAll(".net-label")
+                .data(data)
+                .join("text")
+                .attr("class", "chart-label")
+                .attr("x", -10)
+                .attr("y", item => y(item.node.id) + y.bandwidth() / 2 + 4)
+                .attr("text-anchor", "end")
+                .text(item => shortLabel(item.node.label_cn));
+            g.selectAll(".net-bar")
+                .data(data)
+                .join("rect")
+                .attr("x", item => Math.min(x(0), x(item.net)))
+                .attr("y", item => y(item.node.id))
+                .attr("width", item => Math.abs(x(item.net) - x(0)))
+                .attr("height", y.bandwidth())
+                .attr("rx", 5)
+                .attr("fill", item => item.net >= 0 ? "#45d5de" : "#e85d5a")
+                .on("mouseenter", (event, item) => {
+                    showChartTooltip(event, `<strong>${item.node.label_cn}</strong><br>流入：${formatWanYi(item.inflow)}<br>流出：${formatWanYi(item.outflow)}<br>净额：${formatWanYi(item.net)}`);
+                })
+                .on("mouseleave", hideChartTooltip);
+            g.append("text")
+                .attr("class", "chart-muted")
+                .attr("x", width)
+                .attr("y", height + 30)
+                .attr("text-anchor", "end")
+                .text("横轴单位：万亿元");
+        }
+
+        function drawParetoChart(edges) {
+            const svg = d3.select("#paretoChart");
+            svg.selectAll("*").remove();
+            const data = computePareto(edges);
+            const margin = { top: 20, right: 62, bottom: 42, left: 54 };
+            const width = 860 - margin.left - margin.right;
+            const height = 250 - margin.top - margin.bottom;
+            const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+            const x = d3.scaleBand().domain(data.map(item => item.rank)).range([0, width]).padding(0.18);
+            const yValue = d3.scaleLinear().domain([0, d3.max(data, item => item.display_value) || 1]).nice().range([height, 0]);
+            const yShare = d3.scaleLinear().domain([0, 1]).range([height, 0]);
+
+            g.selectAll(".pareto-grid")
+                .data(yValue.ticks(4))
+                .join("line")
+                .attr("class", "chart-grid-line")
+                .attr("x1", 0)
+                .attr("x2", width)
+                .attr("y1", yValue)
+                .attr("y2", yValue);
+            g.append("g")
+                .attr("class", "chart-axis")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x).tickValues(data.filter((_, index) => index % 2 === 0).map(item => item.rank)));
+            g.append("g")
+                .attr("class", "chart-axis")
+                .call(d3.axisLeft(yValue).ticks(4).tickFormat(value => d3.format(".1f")(value / 10000)));
+            g.append("g")
+                .attr("class", "chart-axis")
+                .attr("transform", `translate(${width},0)`)
+                .call(d3.axisRight(yShare).ticks(4).tickFormat(d3.format(".0%")));
+            g.selectAll(".pareto-bar")
+                .data(data)
+                .join("rect")
+                .attr("x", item => x(item.rank))
+                .attr("y", item => yValue(item.display_value))
+                .attr("width", x.bandwidth())
+                .attr("height", item => height - yValue(item.display_value))
+                .attr("rx", 3)
+                .attr("fill", item => (categoryMeta[item.category] || categoryMeta.conceptual).color)
+                .on("mouseenter", (event, item) => showChartTooltip(event, `<strong>#${item.rank} ${item.label_cn}</strong><br>${formatWanYi(item.display_value)}<br>累计占比：${d3.format(".1%")(item.cumulativeShare)}`))
+                .on("mouseleave", hideChartTooltip);
+            const line = d3.line()
+                .x(item => x(item.rank) + x.bandwidth() / 2)
+                .y(item => yShare(item.cumulativeShare))
+                .curve(d3.curveMonotoneX);
+            g.append("path")
+                .datum(data)
+                .attr("fill", "none")
+                .attr("stroke", "#18201d")
+                .attr("stroke-width", 2.4)
+                .attr("d", line);
+            g.selectAll(".pareto-dot")
+                .data(data)
+                .join("circle")
+                .attr("cx", item => x(item.rank) + x.bandwidth() / 2)
+                .attr("cy", item => yShare(item.cumulativeShare))
+                .attr("r", 3)
+                .attr("fill", "#18201d");
+            g.append("text").attr("class", "chart-muted").attr("x", 0).attr("y", height + 34).text("柱：单条流量（万亿元）");
+            g.append("text").attr("class", "chart-muted").attr("x", width).attr("y", height + 34).attr("text-anchor", "end").text("线：累计占比");
+        }
+
+        function drawCategoryNodeMatrix(nodes, edges) {
+            const svg = d3.select("#categoryNodeMatrix");
+            svg.selectAll("*").remove();
+            const { categories, cells } = buildCategoryNodeMatrix(nodes, edges);
+            const left = 82;
+            const top = 48;
+            const cellW = 43;
+            const cellH = 18;
+            const maxValue = d3.max(cells, cell => cell.value) || 1;
+            const color = d3.scaleSequentialSqrt([0, maxValue], d3.interpolateBuGn);
+
+            svg.selectAll(".cat-node-x")
+                .data(nodes)
+                .join("text")
+                .attr("class", "chart-label")
+                .attr("x", (node, index) => left + index * cellW + cellW / 2)
+                .attr("y", top - 8)
+                .attr("text-anchor", "start")
+                .attr("transform", (node, index) => `rotate(-35 ${left + index * cellW + cellW / 2} ${top - 8})`)
+                .text(node => shortLabel(node.label_cn));
+            svg.selectAll(".cat-node-y")
+                .data(categories)
+                .join("text")
+                .attr("class", "chart-label")
+                .attr("x", left - 8)
+                .attr("y", (category, index) => top + index * cellH + 13)
+                .attr("text-anchor", "end")
+                .text(category => categoryName(category));
+            svg.selectAll(".cat-node-cell")
+                .data(cells)
+                .join("rect")
+                .attr("x", cell => left + cell.col * cellW)
+                .attr("y", cell => top + cell.row * cellH)
+                .attr("width", cellW - 3)
+                .attr("height", cellH - 3)
+                .attr("rx", 4)
+                .attr("fill", cell => cell.value ? color(cell.value) : "rgba(24,32,29,0.04)")
+                .attr("stroke", "rgba(24,32,29,0.07)")
+                .on("mouseenter", (event, cell) => showChartTooltip(event, `<strong>${categoryName(cell.category)} x ${cell.node.label_cn}</strong><br>参与规模：${formatWanYi(cell.value)}`))
+                .on("mouseleave", hideChartTooltip);
+        }
+
+        function drawRadarChart(nodes) {
+            const svg = d3.select("#radarChart");
+            svg.selectAll("*").remove();
+            const series = computeRadarSeries(nodes);
+            const metrics = series[0] ? series[0].values.map(item => item.metric) : [];
+            const center = { x: 178, y: 122 };
+            const radius = 82;
+            const angle = d3.scalePoint().domain(metrics).range([0, Math.PI * 2 - Math.PI * 2 / metrics.length]);
+            const radialPoint = (metric, value) => {
+                const a = angle(metric) - Math.PI / 2;
+                return [center.x + Math.cos(a) * radius * value, center.y + Math.sin(a) * radius * value];
+            };
+
+            [0.25, 0.5, 0.75, 1].forEach(level => {
+                const points = metrics.map(metric => radialPoint(metric, level));
+                svg.append("polygon")
+                    .attr("points", points.map(point => point.join(",")).join(" "))
+                    .attr("fill", "none")
+                    .attr("stroke", "rgba(24,32,29,0.12)");
+            });
+            metrics.forEach(metric => {
+                const [x2, y2] = radialPoint(metric, 1);
+                svg.append("line")
+                    .attr("x1", center.x)
+                    .attr("y1", center.y)
+                    .attr("x2", x2)
+                    .attr("y2", y2)
+                    .attr("stroke", "rgba(24,32,29,0.12)");
+                const [lx, ly] = radialPoint(metric, 1.18);
+                svg.append("text")
+                    .attr("class", "chart-label")
+                    .attr("x", lx)
+                    .attr("y", ly + 4)
+                    .attr("text-anchor", "middle")
+                    .text(metricLabels[metric]);
+            });
+
+            const radarLine = d3.line()
+                .x(point => point[0])
+                .y(point => point[1])
+                .curve(d3.curveLinearClosed);
+
+            series.forEach(item => {
+                const points = item.values.map(value => radialPoint(value.metric, value.value));
+                svg.append("path")
+                    .attr("d", radarLine(points))
+                    .attr("fill", item.color)
+                    .attr("fill-opacity", 0.12)
+                    .attr("stroke", item.color)
+                    .attr("stroke-width", 2.2)
+                    .on("mouseenter", event => showChartTooltip(event, `<strong>${item.node.label_cn}</strong><br>${item.values.map(value => `${value.label}：${formatWanYi(value.raw)}`).join("<br>")}`))
+                    .on("mouseleave", hideChartTooltip);
+            });
+
+            const legend = svg.append("g").attr("transform", "translate(292,48)");
+            series.forEach((item, index) => {
+                const row = legend.append("g").attr("transform", `translate(0,${index * 24})`);
+                row.append("circle").attr("r", 5).attr("fill", item.color);
+                row.append("text")
+                    .attr("class", "chart-label")
+                    .attr("x", 12)
+                    .attr("y", 4)
+                    .text(shortLabel(item.node.label_cn));
+            });
+        }
+
+        function drawCategoryBarChart(edges) {
+            const svg = d3.select("#categoryBarChart");
+            svg.selectAll("*").remove();
+            const data = aggregateCategoryTotals(edges).slice(0, 7);
+            const margin = { top: 12, right: 18, bottom: 74, left: 44 };
+            const width = 410 - margin.left - margin.right;
+            const height = 250 - margin.top - margin.bottom;
+            const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+            const x = d3.scaleBand().domain(data.map(item => item.category)).range([0, width]).padding(0.24);
+            const y = d3.scaleLinear().domain([0, d3.max(data, item => item.value) || 1]).nice().range([height, 0]);
+            g.append("g")
+                .attr("class", "chart-axis")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x).tickFormat(categoryName))
+                .selectAll("text")
+                .attr("text-anchor", "end")
+                .attr("transform", "rotate(-32)");
+            g.append("g").attr("class", "chart-axis").call(d3.axisLeft(y).ticks(4).tickFormat(value => d3.format(".1f")(value / 10000)));
+            g.selectAll(".category-bar")
+                .data(data)
+                .join("rect")
+                .attr("x", item => x(item.category))
+                .attr("y", item => y(item.value))
+                .attr("width", x.bandwidth())
+                .attr("height", item => height - y(item.value))
+                .attr("rx", 5)
+                .attr("fill", item => (categoryMeta[item.category] || categoryMeta.conceptual).color)
+                .on("mouseenter", (event, item) => showChartTooltip(event, `<strong>${item.name}</strong><br>合计：${formatWanYi(item.value)}`))
+                .on("mouseleave", hideChartTooltip);
+        }
+
+        function drawTopFlowChart(edges) {
+            const svg = d3.select("#topFlowChart");
+            svg.selectAll("*").remove();
+            const data = measuredEdges(edges).slice().sort((a, b) => b.display_value - a.display_value).slice(0, 8);
+            const margin = { top: 10, right: 20, bottom: 28, left: 116 };
+            const width = 410 - margin.left - margin.right;
+            const height = 250 - margin.top - margin.bottom;
+            const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+            const x = d3.scaleLinear().domain([0, d3.max(data, item => item.display_value) || 1]).nice().range([0, width]);
+            const y = d3.scaleBand().domain(data.map(item => item.id)).range([0, height]).padding(0.22);
+            g.append("g")
+                .attr("class", "chart-axis")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(4).tickFormat(value => d3.format(".1f")(value / 10000)));
+            g.selectAll(".top-label")
+                .data(data)
+                .join("text")
+                .attr("class", "chart-label")
+                .attr("x", -8)
+                .attr("y", item => y(item.id) + y.bandwidth() / 2 + 4)
+                .attr("text-anchor", "end")
+                .text(item => item.label_cn.length > 8 ? `${item.label_cn.slice(0, 8)}…` : item.label_cn);
+            g.selectAll(".top-bar")
+                .data(data)
+                .join("rect")
+                .attr("x", 0)
+                .attr("y", item => y(item.id))
+                .attr("width", item => x(item.display_value))
+                .attr("height", y.bandwidth())
+                .attr("rx", 5)
+                .attr("fill", item => (categoryMeta[item.category] || categoryMeta.conceptual).color)
+                .on("mouseenter", (event, item) => showChartTooltip(event, `<strong>${item.label_cn}</strong><br>${item.sourceNode.label_cn} -> ${item.targetNode.label_cn}<br>${formatWanYi(item.display_value)}`))
+                .on("mouseleave", hideChartTooltip);
+        }
+
+        function renderStatistics() {
+            if (!graphState) return;
+            drawAdjacencyMatrix(graphState.nodes, graphState.edges);
+            drawNetFlowChart(graphState.nodes, graphState.edges);
+            drawParetoChart(graphState.edges);
+            drawCategoryNodeMatrix(graphState.nodes, graphState.edges);
+            drawRadarChart(graphState.nodes);
+            drawCategoryBarChart(graphState.edges);
+            drawTopFlowChart(graphState.edges);
+        }
+
+        /* ===========================================
            GRAPH RENDERING
            =========================================== */
         function renderGraph(raw) {
@@ -1003,6 +1685,7 @@
             renderToolbar(edges);
             applyVisibility();
             setPanelForSummary(edges);
+            renderStatistics();
             document.getElementById("status").style.display = "none";
         }
 
